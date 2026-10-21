@@ -1,0 +1,16 @@
+{
+  "name": "Карта парка «Сказка»",
+  "short_name": "Сказка",
+  "description": "Интерактивная карта парка развлечений «Сказка» в Крылатском",
+  "lang": "ru",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#e8461e",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
