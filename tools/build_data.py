@@ -18,7 +18,7 @@ from pathlib import Path
 import fitz
 from PIL import Image, ImageDraw
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent / "map"
 NS = {
     "m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
     "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
@@ -31,6 +31,7 @@ MAP_SCALE = 3
 
 # Строки таблицы без своей категории в колонке A
 CATEGORY_OVERRIDES = {range(22, 39): "Семейные аттракционы", range(55, 63): "Локации и лабиринты"}
+NAME_FIXES = {"360.0": "360", "Паровоззик": "Паровозик"}
 CATEGORY_IDS = {
     "Экстремальные аттракционы": "extreme",
     "Семейные аттракционы": "family",
@@ -124,8 +125,7 @@ def main(xlsx, pdf):
             cat = c["A"].strip()
         row_cat = next((v for k, v in CATEGORY_OVERRIDES.items() if r in k), cat)
         name = c["B"].strip()
-        if name == "360.0":
-            name = "360"
+        name = NAME_FIXES.get(name, name)
         items.append(dict(row=r, cat=row_cat, name=name, note=c.get("H", ""),
                           hx=px(c["D"]), hy=px(c["E"]), vx=px(c["F"]), vy=px(c["G"])))
 

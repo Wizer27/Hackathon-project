@@ -31,7 +31,7 @@
     { need: 1,  icon: '🪙', title: '300 сказочных монет', text: 'Стартовый капитал в игре «Парк Сказка»' },
     { need: 3,  icon: '🦙', title: 'Герой «Альпака Пако»', text: 'Редкий персонаж приводит в ваш игровой парк больше гостей' },
     { need: 5,  icon: '🦖', title: 'Постройка «Дино Парк»', text: 'Открывается в игре без ожидания и затрат' },
-    { need: 10, icon: '🎫', title: 'Золотой билет', text: 'Скидка на следующий визит в настоящую «Сказку»' },
+    { need: 10, icon: '🎫', title: 'Золотой билет', text: '+100 гостей в вашем игровом парке' },
   ];
 
   // ---------- Хранилище ----------
@@ -280,7 +280,7 @@
       const got = n >= r.need;
       return `<div class="reward ${got ? 'got' : ''}"><span class="ic">${got ? r.icon : '🔒'}</span>
         <span class="t"><b>${r.title}</b><small>${r.text}</small>
-        ${got ? `<small>Код для игры: <span class="code">${promo(r)}</span></small>` : `<small>Нужно отметок: ${r.need}</small>`}</span></div>`;
+        ${got ? `<small>Код для игры: <span class="code">${promo(r)}</span> · <a href="../play.html">ввести в игре →</a></small>` : `<small>Нужно отметок: ${r.need}</small>`}</span></div>`;
     }).join('');
     const stamps = [...visited].map(byId).filter(Boolean);
     document.getElementById('stamps').innerHTML = stamps.length

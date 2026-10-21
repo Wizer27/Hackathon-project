@@ -1,0 +1,35 @@
+{
+  "start": { "coins": 1000, "guests": 50, "mood": 60, "buildings": ["koleso"] },
+  "days": 5,
+  "goal": { "guests": 300, "mood": 70 },
+  "buildings": [
+    { "id": "koleso",      "name": "Колесо обозрения",    "icon": "🎡", "cost": 400, "guests": 40, "mood": 5,  "mapId": 28, "photo": "map/assets/photos/028.jpg", "text": "Видно весь парк и Москву-реку. С него начинается любая «Сказка»." },
+    { "id": "parovozik",   "name": "Паровозик",           "icon": "🚂", "cost": 250, "guests": 25, "mood": 8,  "mapId": 45, "photo": "map/assets/photos/045.jpg", "text": "Самые маленькие гости едут по кругу и машут родителям." },
+    { "id": "avtodrom",    "name": "Автодром",            "icon": "🏎️", "cost": 350, "guests": 35, "mood": 4,  "mapId": 21, "photo": "map/assets/photos/021.jpg", "text": "Машинки, столкновения и смех. Любят и дети, и взрослые." },
+    { "id": "verevochny",  "name": "Верёвочный парк",     "icon": "🧗", "cost": 300, "guests": 30, "mood": 6,  "mapId": 24, "photo": "map/assets/photos/024.jpg", "text": "Трассы на высоте для школьников и смелых родителей." },
+    { "id": "baba_yaga",   "name": "Дом Бабы Яги",        "icon": "🏚️", "cost": 300, "guests": 25, "mood": 6,  "mapId": 54, "photo": "map/assets/photos/054.jpg", "text": "Избушка на курьих ножках с секретами внутри." },
+    { "id": "aiva",        "name": "Айва парк",           "icon": "🌳", "cost": 350, "guests": 20, "mood": 15, "mapId": 62, "photo": "map/assets/photos/062.jpg", "text": "Парк зелёных скульптур: тихое место, где гости отдыхают." },
+    { "id": "blinnaya",    "name": "Блинная",             "icon": "🥞", "cost": 200, "guests": 10, "mood": 12, "mapId": 72, "photo": "map/assets/photos/072.jpg", "text": "Сытые гости — довольные гости." },
+    { "id": "aviarium",    "name": "Парк птиц Авиариум",  "icon": "🦜", "cost": 450, "guests": 35, "mood": 8,  "mapId": 51, "photo": "map/assets/photos/051.jpg", "text": "Попугаи, фазаны и павлины. Птицам нужны уход и корм.", "animals": true },
+    { "id": "enotia",      "name": "Страна ЕНОТиЯ",       "icon": "🦝", "cost": 550, "guests": 45, "mood": 10, "mapId": 50, "photo": "map/assets/photos/050.jpg", "text": "Зоодом енотов. Еноты любопытные и всё время что-нибудь стащат.", "animals": true },
+    { "id": "alpaka",      "name": "Альпака парк",        "icon": "🦙", "cost": 600, "guests": 50, "mood": 12, "mapId": 49, "photo": "map/assets/photos/049.jpg", "text": "Пушистые альпаки, которых можно покормить с рук.", "animals": true },
+    { "id": "husky",       "name": "Хаски Лэнд",          "icon": "🐺", "cost": 650, "guests": 55, "mood": 10, "mapId": 53, "photo": "map/assets/photos/053.jpg", "text": "Этнодеревня с хаски. Собакам нужны прогулки и внимание.", "animals": true },
+    { "id": "smerch",      "name": "Смерч",               "icon": "🌪️", "cost": 700, "guests": 70, "mood": -3, "mapId": 18, "photo": "map/assets/photos/018.jpg", "text": "Экстрим для подростков. Много гостей, но и длинные очереди." },
+    { "id": "put_drakona", "name": "Путь дракона",        "icon": "🐉", "cost": 800, "guests": 80, "mood": 2,  "mapId": 15, "photo": "map/assets/photos/015.jpg", "text": "Американские горки — главный магнит для компаний друзей." },
+    { "id": "dino",        "name": "Дино парк",           "icon": "🦖", "cost": 900, "guests": 90, "mood": 10, "mapId": 57, "photo": "map/assets/photos/057.jpg", "text": "Динозавры в натуральную величину. Мечта каждого ребёнка." }
+  ],
+  "heroes": [
+    { "id": "feya",   "name": "Фея Сказки",   "icon": "🧚", "role": "Ведущая игры", "text": "Хранительница парка. Рассказывает, что происходит, и подсказывает решения. Живёт в домике у отдела продаж." },
+    { "id": "pako",   "name": "Альпака Пако", "icon": "🦙", "role": "Любимец гостей", "text": "Обожает фотографироваться и поднимает настроение всем вокруг. Открывается за 3 отметки в «Сказочном паспорте»." },
+    { "id": "timosha","name": "Енот Тимоша",  "icon": "🦝", "role": "Хитрец", "text": "Житель Страны ЕНОТиЯ. То стащит ключи от кассы, то найдёт клад." },
+    { "id": "buran",  "name": "Хаски Буран",  "icon": "🐺", "role": "Вожак упряжки", "text": "Зимой катает гостей на санях, летом скучает и требует прогулок." },
+    { "id": "rex",    "name": "Дино Рекс",    "icon": "🦖", "role": "Звезда Дино парка", "text": "Самый большой житель «Сказки». Иногда громко рычит и пугает малышей." },
+    { "id": "yaga",   "name": "Баба Яга",     "icon": "🧙", "role": "Соседка с характером", "text": "То поможет, то устроит проверку. С ней лучше дружить." }
+  ],
+  "promo": [
+    { "code": "SKAZKA-729", "need": 1,  "title": "300 сказочных монет", "coins": 300 },
+    { "code": "SKAZKA-JA7", "need": 3,  "title": "Альпака Пако в вашем парке", "mood": 10, "hero": "pako" },
+    { "code": "SKAZKA-VI5","need": 5,  "title": "Дино парк бесплатно", "build": "dino" },
+    { "code": "SKAZKA-1Q20","need": 10, "title": "Золотой билет: +100 гостей", "guests": 100 }
+  ]
+}

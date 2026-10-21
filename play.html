@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e8461e">
+  <title>Играть — Парк Сказка</title>
+  <link rel="icon" href="map/assets/icon-192.png">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="play.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a class="logo" href="index.html">🎡 Парк <b>Сказка</b></a>
+      <nav>
+        <a href="index.html#rules">Правила</a>
+        <a href="map/">Карта парка</a>
+      </nav>
+      <button class="btn small" id="restart">↻ Заново</button>
+    </div>
+  </header>
+
+  <div class="hud">
+    <div class="wrap hud-in">
+      <div class="res"><span>📅</span><b id="day"></b><small>день</small></div>
+      <div class="res"><span>🪙</span><b id="coins"></b><small>монеты</small></div>
+      <div class="res"><span>👥</span><b id="guests"></b><small>гостей / цель 300</small></div>
+      <div class="res mood"><span>😊</span><b id="mood"></b><small>настроение / цель 70</small><i><em id="mood-bar"></em></i></div>
+    </div>
+  </div>
+
+  <main class="wrap game">
+    <section class="stage">
+      <div id="log" class="log"></div>
+      <div id="turn"></div>
+    </section>
+
+    <aside class="side">
+      <div class="card">
+        <h3>Мой парк</h3>
+        <div id="park" class="park"></div>
+      </div>
+      <div class="card">
+        <h3>🎟️ Код из «Сказочного паспорта»</h3>
+        <p class="hint">Отмечайтесь на аттракционах в <a href="map/">карте парка</a> и вводите полученные коды здесь.</p>
+        <form id="promo" class="promo">
+          <input id="promo-in" placeholder="SKAZKA-…" autocomplete="off" autocapitalize="characters">
+          <button class="btn small primary">OK</button>
+        </form>
+        <div id="promo-msg" class="hint"></div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="host.js"></script>
+  <script src="play.js"></script>
+</body>
+</html>

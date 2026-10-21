@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#e8461e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Сказка">
+  <title>Карта парка «Сказка»</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input id="q" type="search" placeholder="Найти аттракцион, кафе, туалет…" autocomplete="off">
+      <button id="q-clear" class="icon-btn" aria-label="Очистить" hidden>×</button>
+    </div>
+    <div id="chips" class="chips" role="toolbar" aria-label="Категории"></div>
+  </header>
+
+  <main>
+    <section id="view-map" class="view active">
+      <div id="map"></div>
+      <div class="fabs">
+        <button class="fab" data-nearest="service" title="Ближайший туалет">🚻</button>
+        <button class="fab" data-nearest="food" title="Ближайшее кафе">🍴</button>
+        <button class="fab" id="fit" title="Весь парк">⤢</button>
+      </div>
+    </section>
+
+    <section id="view-list" class="view">
+      <div id="list" class="list"></div>
+    </section>
+
+    <section id="view-passport" class="view">
+      <div class="passport">
+        <div class="pass-head">
+          <div class="pass-title">Сказочный паспорт</div>
+          <p>Отмечайтесь на настоящих аттракционах парка и получайте бонусы в онлайн-игре «Парк Сказка».</p>
+          <div class="progress"><div id="pass-bar"></div></div>
+          <div id="pass-count" class="pass-count"></div>
+          <a class="pass-play" href="../play.html">▶ Играть в «Парк Сказка»</a>
+        </div>
+        <div id="rewards" class="rewards"></div>
+        <h3>Мои отметки</h3>
+        <div id="stamps" class="stamps"></div>
+        <h3>Мой план на день</h3>
+        <div id="plan" class="list compact"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="sheet" class="sheet" aria-hidden="true">
+    <div class="grip"></div>
+    <button id="sheet-close" class="icon-btn close" aria-label="Закрыть">×</button>
+    <div id="sheet-body"></div>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <nav class="tabs">
+    <button class="tab active" data-view="map"><span>🗺️</span>Карта</button>
+    <button class="tab" data-view="list"><span>📋</span>Список</button>
+    <button class="tab" data-view="passport"><span>🎟️</span>Паспорт<b id="badge" hidden></b></button>
+  </nav>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

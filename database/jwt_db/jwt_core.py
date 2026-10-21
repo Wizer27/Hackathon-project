@@ -1,0 +1,95 @@
+from sqlalchemy import text,select,and_
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from datetime import datetime,timedelta
+from typing import List,Literal
+from sqlalchemy.orm import sessionmaker
+import asyncpg
+import os
+from dotenv import load_dotenv
+from database.jwt_db.jwt_models import metadata_obj,jwt_table
+import asyncio
+import atexit
+from sqlalchemy import func
+import logging
+from sqlalchemy.dialects.postgresql import insert
+from api.config import database_url,async_engine
+
+
+
+logger = logging.getLogger(__name__)
+
+load_dotenv()
+
+
+
+
+# ---- INIT ---- 
+
+async def drop_table():
+    async with async_engine.begin() as conn:
+        await conn.run_sync(metadata_obj.drop_all)
+
+async def create_table():   
+    async with async_engine.begin() as conn:
+        await conn.run_sync(metadata_obj.create_all)
+
+
+
+
+async def create_refresh_token_db(user_id:str,token:str) -> bool:
+
+    async with AsyncSession(async_engine) as conn:
+        async with conn.begin():
+            try:
+                stmt = insert(jwt_table).values(
+                    user_id = user_id,
+                    token = token
+                ).on_conflict_do_nothing(
+                    index_elements=[jwt_table.c.user_id],
+                )
+                result = await conn.execute(stmt)
+                
+                if result.rowcount == 0:
+                    return False
+                return True
+            except Exception:
+                logger.exception("JWT SQL ERROR")
+                return False
+
+async def update_refresh_token(user_id:str,token:str) -> bool:
+    
+    async with AsyncSession(async_engine) as conn:
+        async with conn.begin():
+            try:
+                stmt = jwt_table.update().where(jwt_table.c.user_id == user_id).values(
+                    token = token
+                )
+                await conn.execute(stmt)
+                return True
+            except Exception:
+                logger.exception("JWT SQL ERROR")
+                return False
+
+async def get_user_refresh_token(user_id:str) -> str:
+
+    async with AsyncSession(async_engine) as conn:
+        try:
+            stmt = select(jwt_table.c.token).where(jwt_table.c.user_id == user_id)
+            res = await conn.execute(stmt)
+            data = res.scalar_one_or_none()
+            return data if data is not None else ""
+        except Exception:
+            logger.exception("JWT SQL ERROR")
+            return ""
+
+async def delete_jwt_tokens(user_id:str):
+    async with AsyncSession(async_engine) as conn:
+        async with conn.begin():
+            try:
+                stmt = jwt_table.delete().where(
+                    jwt_table.c.user_id == user_id
+                )
+                await conn.execute(stmt)
+            except Exception:
+                logger.exception("JWT SQL ERROR")
+                return

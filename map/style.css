@@ -166,3 +166,4 @@ body.passport-open .top { display: none; }
   background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 14px; max-width: 90vw; text-align: center;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+.pass-play { display: inline-block; margin-top: 12px; background: #fff; color: var(--brand); font-weight: 700; text-decoration: none; padding: 8px 14px; border-radius: 10px; }
