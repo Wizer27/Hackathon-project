@@ -8,9 +8,10 @@ from dotenv import load_dotenv
 import uuid
 from typing  import Optional
 from pydantic import BaseModel
-from database.main_db.main_core import create_user
+from database.main_db.main_core import create_user,get_user_data_for_jwt
+from database.jwt_db.jwt_core import create_refresh_token_db,delete_jwt_tokens,get_user_refresh_token
 from api.auth import create_access_token,create_refresh_token
-
+from jose import jwt,JWTError
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_ID_SITE = os.getenv("GOOGLE_CLIENT_ID_SITE")
@@ -85,7 +86,7 @@ async def auth_google_handler(request:Request,req:AuthGoogle):
     acces_token:str = create_access_token(user_data)
     refresh_token:str = create_refresh_token(user_data)
 
-    try_create_refresh = await create_new_device(user_id_main,req.device_name,refresh_token,req.device_id)
+    try_create_refresh = await create_refresh_token_db(user_id_main,refresh_token)
 
 
     return {
@@ -94,6 +95,105 @@ async def auth_google_handler(request:Request,req:AuthGoogle):
         "refresh_token":refresh_token,
         "token_type":"bearer"
     }
+
+
+
+class RefreshToken(BaseModel):
+    refresh_token:str
+
+@app.post("/refresh")
+async def refresh_token_api(request:Request,req:RefreshToken):
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Invalid refresh token",
+    )
+
+    try:
+        payload = jwt.decode(req.refresh_token, os.getenv("REFRESH_SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")])
+        user_id: str = payload.get("user_id")
+        device_id:str = payload.get("device_id")
+
+
+        if user_id is None or device_id is None:
+            raise credentials_exception
+
+        stored_token = await get_user_refresh_token(user_id)
+        if stored_token != req.refresh_token:
+            raise credentials_exception
+
+        user_data = await get_user_data_for_jwt(user_id)
+
+        if user_data == {} or not user_data.get("provider"):
+            raise credentials_exception
+
+        user_data["device_id"] = device_id
+
+    except JWTError:
+        raise credentials_exception
+
+
+    new_access_token = create_access_token(user_data)
+
+    new_refresh_token = create_refresh_token(user_data)
+
+    await create_refresh_token_db(user_id,new_refresh_token)
+
+
+    return {
+        "user_id":user_id,
+        "access_token": new_access_token,
+        "refresh_token": new_refresh_token,
+        "token_type": "bearer"
+    }
+
+async def get_current_user(token: str = Header(..., alias="Authorization")) -> dict:
+    """
+    Проверяет access token и возвращает данные пользователя.
+    Токен должен передаваться в формате: "Bearer <token>"
+    """
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        # Проверяем формат токена
+        if not token.startswith("Bearer "):
+            raise credentials_exception
+
+        # Извлекаем сам токен
+        token = token.replace("Bearer ", "")
+
+        # Декодируем токен
+        payload = jwt.decode(
+            token,
+            os.getenv("SECRET_KEY"),
+            algorithms=[os.getenv("ALGORITHM")]
+        )
+
+        user_id: str = payload.get("user_id")
+        device_id: str = payload.get("device_id")
+        if user_id is None or device_id is None:
+            raise credentials_exception
+
+        return {
+            "user_id":user_id,
+            "device_id":device_id
+        }
+
+
+    except ExpiredSignatureError:
+        # Токен истек - клиент должен использовать refresh
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except JWTError:
+        raise credentials_exception
+
+
 
 
 

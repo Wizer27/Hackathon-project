@@ -36,39 +36,24 @@ async def create_table():
 
 
 
-async def create_refresh_token_db(user_id:str,token:str) -> bool:
-
+async def create_refresh_token_db(user_id:str,token:str) -> None:
     async with AsyncSession(async_engine) as conn:
         async with conn.begin():
             try:
                 stmt = insert(jwt_table).values(
                     user_id = user_id,
                     token = token
-                ).on_conflict_do_nothing(
+                ).on_conflict_do_update(
                     index_elements=[jwt_table.c.user_id],
-                )
-                result = await conn.execute(stmt)
-                
-                if result.rowcount == 0:
-                    return False
-                return True
-            except Exception:
-                logger.exception("JWT SQL ERROR")
-                return False
-
-async def update_refresh_token(user_id:str,token:str) -> bool:
-    
-    async with AsyncSession(async_engine) as conn:
-        async with conn.begin():
-            try:
-                stmt = jwt_table.update().where(jwt_table.c.user_id == user_id).values(
-                    token = token
+                    set_ = {
+                        "token":token
+                    }
                 )
                 await conn.execute(stmt)
-                return True
             except Exception:
                 logger.exception("JWT SQL ERROR")
-                return False
+                return None
+
 
 async def get_user_refresh_token(user_id:str) -> str:
 

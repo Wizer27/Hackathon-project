@@ -1,5 +1,5 @@
 // Офлайн-режим: в парке связь бывает плохой, поэтому карта и данные кешируются при первом открытии
-const CACHE = 'skazka-v2';
+const CACHE = 'skazka-v3';
 const CORE = [
   './', 'index.html', 'style.css', 'app.js', 'data.js', 'manifest.webmanifest',
   'assets/map.webp', 'assets/icon-192.png', 'assets/icon-512.png',

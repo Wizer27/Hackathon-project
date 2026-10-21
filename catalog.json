@@ -1,35 +1,226 @@
 {
-  "start": { "coins": 1000, "guests": 50, "mood": 60, "buildings": ["koleso"] },
-  "days": 5,
-  "goal": { "guests": 300, "mood": 70 },
-  "buildings": [
-    { "id": "koleso",      "name": "Колесо обозрения",    "icon": "🎡", "cost": 400, "guests": 40, "mood": 5,  "mapId": 28, "photo": "map/assets/photos/028.jpg", "text": "Видно весь парк и Москву-реку. С него начинается любая «Сказка»." },
-    { "id": "parovozik",   "name": "Паровозик",           "icon": "🚂", "cost": 250, "guests": 25, "mood": 8,  "mapId": 45, "photo": "map/assets/photos/045.jpg", "text": "Самые маленькие гости едут по кругу и машут родителям." },
-    { "id": "avtodrom",    "name": "Автодром",            "icon": "🏎️", "cost": 350, "guests": 35, "mood": 4,  "mapId": 21, "photo": "map/assets/photos/021.jpg", "text": "Машинки, столкновения и смех. Любят и дети, и взрослые." },
-    { "id": "verevochny",  "name": "Верёвочный парк",     "icon": "🧗", "cost": 300, "guests": 30, "mood": 6,  "mapId": 24, "photo": "map/assets/photos/024.jpg", "text": "Трассы на высоте для школьников и смелых родителей." },
-    { "id": "baba_yaga",   "name": "Дом Бабы Яги",        "icon": "🏚️", "cost": 300, "guests": 25, "mood": 6,  "mapId": 54, "photo": "map/assets/photos/054.jpg", "text": "Избушка на курьих ножках с секретами внутри." },
-    { "id": "aiva",        "name": "Айва парк",           "icon": "🌳", "cost": 350, "guests": 20, "mood": 15, "mapId": 62, "photo": "map/assets/photos/062.jpg", "text": "Парк зелёных скульптур: тихое место, где гости отдыхают." },
-    { "id": "blinnaya",    "name": "Блинная",             "icon": "🥞", "cost": 200, "guests": 10, "mood": 12, "mapId": 72, "photo": "map/assets/photos/072.jpg", "text": "Сытые гости — довольные гости." },
-    { "id": "aviarium",    "name": "Парк птиц Авиариум",  "icon": "🦜", "cost": 450, "guests": 35, "mood": 8,  "mapId": 51, "photo": "map/assets/photos/051.jpg", "text": "Попугаи, фазаны и павлины. Птицам нужны уход и корм.", "animals": true },
-    { "id": "enotia",      "name": "Страна ЕНОТиЯ",       "icon": "🦝", "cost": 550, "guests": 45, "mood": 10, "mapId": 50, "photo": "map/assets/photos/050.jpg", "text": "Зоодом енотов. Еноты любопытные и всё время что-нибудь стащат.", "animals": true },
-    { "id": "alpaka",      "name": "Альпака парк",        "icon": "🦙", "cost": 600, "guests": 50, "mood": 12, "mapId": 49, "photo": "map/assets/photos/049.jpg", "text": "Пушистые альпаки, которых можно покормить с рук.", "animals": true },
-    { "id": "husky",       "name": "Хаски Лэнд",          "icon": "🐺", "cost": 650, "guests": 55, "mood": 10, "mapId": 53, "photo": "map/assets/photos/053.jpg", "text": "Этнодеревня с хаски. Собакам нужны прогулки и внимание.", "animals": true },
-    { "id": "smerch",      "name": "Смерч",               "icon": "🌪️", "cost": 700, "guests": 70, "mood": -3, "mapId": 18, "photo": "map/assets/photos/018.jpg", "text": "Экстрим для подростков. Много гостей, но и длинные очереди." },
-    { "id": "put_drakona", "name": "Путь дракона",        "icon": "🐉", "cost": 800, "guests": 80, "mood": 2,  "mapId": 15, "photo": "map/assets/photos/015.jpg", "text": "Американские горки — главный магнит для компаний друзей." },
-    { "id": "dino",        "name": "Дино парк",           "icon": "🦖", "cost": 900, "guests": 90, "mood": 10, "mapId": 57, "photo": "map/assets/photos/057.jpg", "text": "Динозавры в натуральную величину. Мечта каждого ребёнка." }
+  "start": {
+    "coins": 2500,
+    "mood": 70,
+    "built": [
+      28,
+      27,
+      72
+    ]
+  },
+  "dayLength": 240,
+  "categories": {
+    "extreme": {
+      "label": "Экстрим",
+      "icon": "zap",
+      "color": "#f03e3e",
+      "cost": 1750,
+      "income": 19,
+      "appeal": 5,
+      "joy": 14,
+      "breaks": true
+    },
+    "family": {
+      "label": "Семейные",
+      "icon": "ferris-wheel",
+      "color": "#f59f00",
+      "cost": 1000,
+      "income": 11,
+      "appeal": 3,
+      "joy": 12,
+      "breaks": true
+    },
+    "kids": {
+      "label": "Детские",
+      "icon": "baby",
+      "color": "#e64980",
+      "cost": 600,
+      "income": 6,
+      "appeal": 2,
+      "joy": 10
+    },
+    "animals": {
+      "label": "Животные",
+      "icon": "paw-print",
+      "color": "#2f9e44",
+      "cost": 1500,
+      "income": 13,
+      "appeal": 4,
+      "joy": 18,
+      "animals": true
+    },
+    "locations": {
+      "label": "Локации",
+      "icon": "castle",
+      "color": "#7048e8",
+      "cost": 1100,
+      "income": 10,
+      "appeal": 3,
+      "joy": 14
+    },
+    "events": {
+      "label": "Площадки",
+      "icon": "party-popper",
+      "color": "#1c7ed6",
+      "cost": 900,
+      "income": 5,
+      "appeal": 2,
+      "joy": 16
+    },
+    "food": {
+      "label": "Еда",
+      "icon": "utensils",
+      "color": "#e8590c",
+      "cost": 500,
+      "income": 10,
+      "appeal": 1,
+      "joy": 16
+    },
+    "shop": {
+      "label": "Сувениры",
+      "icon": "shopping-bag",
+      "color": "#ae3ec9",
+      "cost": 750,
+      "income": 13,
+      "appeal": 1,
+      "joy": 8
+    },
+    "arcade": {
+      "label": "Аркады и тир",
+      "icon": "gamepad-2",
+      "color": "#c2255c",
+      "cost": 600,
+      "income": 8,
+      "appeal": 2,
+      "joy": 10
+    },
+    "photo": {
+      "label": "Фото и аквагрим",
+      "icon": "camera",
+      "color": "#0c8599",
+      "cost": 400,
+      "income": 6,
+      "appeal": 1,
+      "joy": 8
+    }
+  },
+  "overrides": {
+    "57": {
+      "cost": 2250,
+      "income": 19,
+      "appeal": 7,
+      "joy": 20
+    },
+    "15": {
+      "cost": 2000,
+      "income": 22,
+      "appeal": 6,
+      "joy": 16
+    },
+    "28": {
+      "cost": 1000,
+      "income": 10,
+      "appeal": 4,
+      "joy": 12
+    },
+    "49": {
+      "cost": 1600,
+      "income": 14,
+      "appeal": 5,
+      "joy": 20
+    },
+    "62": {
+      "cost": 900,
+      "income": 3,
+      "appeal": 1,
+      "joy": 22
+    }
+  },
+  "featured": [
+    28,
+    45,
+    72,
+    54,
+    21,
+    24,
+    62,
+    51,
+    50,
+    49,
+    53,
+    18,
+    15,
+    57
   ],
   "heroes": [
-    { "id": "feya",   "name": "Фея Сказки",   "icon": "🧚", "role": "Ведущая игры", "text": "Хранительница парка. Рассказывает, что происходит, и подсказывает решения. Живёт в домике у отдела продаж." },
-    { "id": "pako",   "name": "Альпака Пако", "icon": "🦙", "role": "Любимец гостей", "text": "Обожает фотографироваться и поднимает настроение всем вокруг. Открывается за 3 отметки в «Сказочном паспорте»." },
-    { "id": "timosha","name": "Енот Тимоша",  "icon": "🦝", "role": "Хитрец", "text": "Житель Страны ЕНОТиЯ. То стащит ключи от кассы, то найдёт клад." },
-    { "id": "buran",  "name": "Хаски Буран",  "icon": "🐺", "role": "Вожак упряжки", "text": "Зимой катает гостей на санях, летом скучает и требует прогулок." },
-    { "id": "rex",    "name": "Дино Рекс",    "icon": "🦖", "role": "Звезда Дино парка", "text": "Самый большой житель «Сказки». Иногда громко рычит и пугает малышей." },
-    { "id": "yaga",   "name": "Баба Яга",     "icon": "🧙", "role": "Соседка с характером", "text": "То поможет, то устроит проверку. С ней лучше дружить." }
+    {
+      "id": "feya",
+      "name": "Управляющая парком",
+      "role": "Ведущая игры",
+      "photo": "assets/thumbs/071.jpg",
+      "text": "Каждое утро сообщает о ситуации в парке и предлагает варианты решений."
+    },
+    {
+      "id": "pako",
+      "name": "Зоотехник",
+      "role": "Уход за животными",
+      "photo": "assets/thumbs/049.jpg",
+      "text": "Отвечает за кормление и здоровье животных в контактных зонах."
+    },
+    {
+      "id": "timosha",
+      "name": "Старший кассир",
+      "role": "Кассы и вход",
+      "photo": "assets/thumbs/050.jpg",
+      "text": "Следит за очередями на входе и работой касс."
+    },
+    {
+      "id": "buran",
+      "name": "Кинолог",
+      "role": "Хаски Лэнд",
+      "photo": "assets/thumbs/053.jpg",
+      "text": "Отвечает за выгул и содержание собак."
+    },
+    {
+      "id": "rex",
+      "name": "Главный инженер",
+      "role": "Техническая служба",
+      "photo": "assets/thumbs/057.jpg",
+      "text": "Проверяет аттракционы и отвечает за ремонт."
+    },
+    {
+      "id": "yaga",
+      "name": "Инспектор",
+      "role": "Контроль качества",
+      "photo": "assets/thumbs/054.jpg",
+      "text": "Следит за чистотой и безопасностью на территории."
+    }
   ],
   "promo": [
-    { "code": "SKAZKA-729", "need": 1,  "title": "300 сказочных монет", "coins": 300 },
-    { "code": "SKAZKA-JA7", "need": 3,  "title": "Альпака Пако в вашем парке", "mood": 10, "hero": "pako" },
-    { "code": "SKAZKA-VI5","need": 5,  "title": "Дино парк бесплатно", "build": "dino" },
-    { "code": "SKAZKA-1Q20","need": 10, "title": "Золотой билет: +100 гостей", "guests": 100 }
+    {
+      "code": "SKAZKA-729",
+      "need": 1,
+      "title": "1000 монет",
+      "coins": 1000
+    },
+    {
+      "code": "SKAZKA-JA7",
+      "need": 3,
+      "title": "Опытный зоотехник: +10 к настроению гостей",
+      "mood": 10,
+      "hero": "pako"
+    },
+    {
+      "code": "SKAZKA-VI5",
+      "need": 5,
+      "title": "Дино парк бесплатно",
+      "build": 57
+    },
+    {
+      "code": "SKAZKA-1Q20",
+      "need": 10,
+      "title": "Золотой билет: толпа гостей",
+      "guests": 25
+    }
   ]
 }

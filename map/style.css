@@ -66,7 +66,7 @@ body.passport-open .top { display: none; }
 .pin.sel .pin-dot { width: 40px; height: 40px; font-size: 20px; box-shadow: 0 0 0 4px rgba(232,70,30,.35); }
 .pin.sel .pin-lbl { display: block; }
 .pin.done .pin-dot::after {
-  content: "✓"; position: absolute; right: -5px; top: -5px; width: 15px; height: 15px; border-radius: 50%;
+  content: ""; position: absolute; right: -5px; top: -5px; width: 15px; height: 15px; border-radius: 50%;
   background: #1f9d55; color: #fff; font-size: 10px; display: grid; place-items: center; border: 1.5px solid #fff;
 }
 .z-low .pin.done .pin-dot::after { display: none; }
@@ -88,9 +88,7 @@ body.passport-open .top { display: none; }
   flex: 1; border: 0; background: none; font-size: 11px; color: var(--muted); position: relative;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
 }
-.tab span { font-size: 22px; filter: grayscale(1); opacity: .6; }
 .tab.active { color: var(--brand); font-weight: 600; }
-.tab.active span { filter: none; opacity: 1; }
 .tab b {
   position: absolute; top: 6px; left: calc(50% + 8px); background: var(--brand); color: #fff;
   font-size: 10px; border-radius: 9px; padding: 1px 6px;
@@ -167,3 +165,23 @@ body.passport-open .top { display: none; }
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 .pass-play { display: inline-block; margin-top: 12px; background: #fff; color: var(--brand); font-weight: 700; text-decoration: none; padding: 8px 14px; border-radius: 10px; }
+
+/* Иконки вместо эмодзи */
+.i { width: 1em; height: 1em; flex: none; display: inline-block; vertical-align: -.15em; }
+.pin-dot .i { width: 16px; height: 16px; color: #fff; }
+.pin.sel .pin-dot .i { width: 21px; height: 21px; }
+.z-low .pin-dot .i { display: none; }
+.pin.done .pin-dot::after { background: #1f9d55 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 9px no-repeat; }
+.fab .i { width: 22px; height: 22px; color: #1d1d1f; }
+.tab .i { width: 24px; height: 24px; opacity: .6; }
+.tab.active .i { opacity: 1; }
+.icon-btn .i { width: 20px; height: 20px; }
+.sheet h2 .i { width: 20px; height: 20px; color: var(--brand); }
+.btn .i, .note .i, .hint .i { width: 15px; height: 15px; vertical-align: -2px; }
+.i.on { color: #f59f00; fill: #f59f00; }
+.i.ok { color: #1f9d55; }
+.row .ph .i { width: 24px; height: 24px; color: var(--muted); }
+.reward .ic .i { width: 26px; height: 26px; color: var(--brand); }
+.stamp .s .i { width: 28px; height: 28px; color: var(--c); }
+.pass-play .i { width: 14px; height: 14px; }
+.chip .i, .group-h .i { width: 14px; height: 14px; vertical-align: -2px; }

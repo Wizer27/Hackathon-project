@@ -19,7 +19,7 @@
     <div class="search">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
       <input id="q" type="search" placeholder="Найти аттракцион, кафе, туалет…" autocomplete="off">
-      <button id="q-clear" class="icon-btn" aria-label="Очистить" hidden>×</button>
+      <button id="q-clear" class="icon-btn" aria-label="Очистить" hidden><i data-icon="x"></i></button>
     </div>
     <div id="chips" class="chips" role="toolbar" aria-label="Категории"></div>
   </header>
@@ -28,9 +28,9 @@
     <section id="view-map" class="view active">
       <div id="map"></div>
       <div class="fabs">
-        <button class="fab" data-nearest="service" title="Ближайший туалет">🚻</button>
-        <button class="fab" data-nearest="food" title="Ближайшее кафе">🍴</button>
-        <button class="fab" id="fit" title="Весь парк">⤢</button>
+        <button class="fab" data-nearest="service" title="Ближайший туалет"><i data-icon="bath"></i></button>
+        <button class="fab" data-nearest="food" title="Ближайшее кафе"><i data-icon="utensils"></i></button>
+        <button class="fab" id="fit" title="Весь парк"><i data-icon="map"></i></button>
       </div>
     </section>
 
@@ -45,7 +45,7 @@
           <p>Отмечайтесь на настоящих аттракционах парка и получайте бонусы в онлайн-игре «Парк Сказка».</p>
           <div class="progress"><div id="pass-bar"></div></div>
           <div id="pass-count" class="pass-count"></div>
-          <a class="pass-play" href="../play.html">▶ Играть в «Парк Сказка»</a>
+          <a class="pass-play" href="../play.html"><i data-icon="play"></i> Играть в «Парк Сказка»</a>
         </div>
         <div id="rewards" class="rewards"></div>
         <h3>Мои отметки</h3>
@@ -58,18 +58,20 @@
 
   <div id="sheet" class="sheet" aria-hidden="true">
     <div class="grip"></div>
-    <button id="sheet-close" class="icon-btn close" aria-label="Закрыть">×</button>
+    <button id="sheet-close" class="icon-btn close" aria-label="Закрыть"><i data-icon="x"></i></button>
     <div id="sheet-body"></div>
   </div>
 
   <div id="toast" class="toast" role="status"></div>
 
   <nav class="tabs">
-    <button class="tab active" data-view="map"><span>🗺️</span>Карта</button>
-    <button class="tab" data-view="list"><span>📋</span>Список</button>
-    <button class="tab" data-view="passport"><span>🎟️</span>Паспорт<b id="badge" hidden></b></button>
+    <button class="tab active" data-view="map"><i data-icon="map"></i>Карта</button>
+    <button class="tab" data-view="list"><i data-icon="list-checks"></i>Список</button>
+    <button class="tab" data-view="passport"><i data-icon="ticket"></i>Паспорт<b id="badge" hidden></b></button>
   </nav>
 
+  <script src="../icons.js"></script>
+  <script>Icons.hydrate()</script>
   <script src="vendor/leaflet/leaflet.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>

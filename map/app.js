@@ -2,36 +2,38 @@
   const { width: W, height: H, items } = window.PARK;
 
   const CATS = {
-    extreme:   { label: 'Экстрим',      icon: '🎢', color: '#e8461e', stamp: true },
-    family:    { label: 'Семейные',     icon: '🎡', color: '#f08c00', stamp: true },
-    kids:      { label: 'Детские',      icon: '🧸', color: '#e64980', stamp: true },
-    animals:   { label: 'Животные',     icon: '🦙', color: '#2f9e44', stamp: true },
-    locations: { label: 'Локации',      icon: '🏰', color: '#7048e8', stamp: true },
-    events:    { label: 'Праздники',    icon: '🎉', color: '#1c7ed6', stamp: false },
-    food:      { label: 'Еда',          icon: '🍴', color: '#d9480f', stamp: false },
-    shop:      { label: 'Сувениры',     icon: '🛍️', color: '#ae3ec9', stamp: false },
-    arcade:    { label: 'Аркады и тир', icon: '🎯', color: '#c2255c', stamp: false },
-    photo:     { label: 'Фото и аквагрим', icon: '📸', color: '#0c8599', stamp: false },
-    service:   { label: 'Сервис',       icon: 'ℹ️', color: '#495057', stamp: false },
-    transport: { label: 'Как добраться', icon: '🚌', color: '#343a40', stamp: false },
+    extreme:   { label: 'Экстрим',      icon: 'zap', color: '#e8461e', stamp: true },
+    family:    { label: 'Семейные',     icon: 'ferris-wheel', color: '#f08c00', stamp: true },
+    kids:      { label: 'Детские',      icon: 'baby', color: '#e64980', stamp: true },
+    animals:   { label: 'Животные',     icon: 'paw-print', color: '#2f9e44', stamp: true },
+    locations: { label: 'Локации',      icon: 'castle', color: '#7048e8', stamp: true },
+    events:    { label: 'Праздники',    icon: 'party-popper', color: '#1c7ed6', stamp: false },
+    food:      { label: 'Еда',          icon: 'utensils', color: '#d9480f', stamp: false },
+    shop:      { label: 'Сувениры',     icon: 'shopping-bag', color: '#ae3ec9', stamp: false },
+    arcade:    { label: 'Аркады и тир', icon: 'gamepad-2', color: '#c2255c', stamp: false },
+    photo:     { label: 'Фото и аквагрим', icon: 'camera', color: '#0c8599', stamp: false },
+    service:   { label: 'Сервис',       icon: 'info', color: '#495057', stamp: false },
+    transport: { label: 'Как добраться', icon: 'bus', color: '#343a40', stamp: false },
   };
   // Иконки конкретных сервисных объектов понятнее общей иконки категории
-  const iconFor = (it) =>
-    /Туалет/.test(it.name) ? '🚻' :
-    /матери/.test(it.name) ? '🍼' :
-    /Касса/.test(it.name) ? '🎟️' :
-    /курения/.test(it.name) ? '🚬' :
-    /Парковка/.test(it.name) ? '🅿️' :
+  const I = window.Icons;
+  const iconName = (it) =>
+    /Туалет/.test(it.name) ? 'bath' :
+    /матери/.test(it.name) ? 'baby' :
+    /Касса/.test(it.name) ? 'ticket' :
+    /курения/.test(it.name) ? 'info' :
+    /Парковка/.test(it.name) ? 'square-parking' :
     CATS[it.cats[0]].icon;
+  const iconFor = (it) => I.svg(iconName(it));
   const catOf = (it) => CATS[it.cats[0]];
   const canStamp = (it) => it.cats.some((c) => CATS[c].stamp);
   const STAMP_TOTAL = items.filter(canStamp).length;
 
   const REWARDS = [
-    { need: 1,  icon: '🪙', title: '300 сказочных монет', text: 'Стартовый капитал в игре «Парк Сказка»' },
-    { need: 3,  icon: '🦙', title: 'Герой «Альпака Пако»', text: 'Редкий персонаж приводит в ваш игровой парк больше гостей' },
-    { need: 5,  icon: '🦖', title: 'Постройка «Дино Парк»', text: 'Открывается в игре без ожидания и затрат' },
-    { need: 10, icon: '🎫', title: 'Золотой билет', text: '+100 гостей в вашем игровом парке' },
+    { need: 1,  icon: 'coins', title: '500 сказочных монет', text: 'Монеты в тайкуне «Парк Сказка»' },
+    { need: 3,  icon: 'paw-print', title: 'Опытный зоотехник', text: '+10 к настроению гостей в игровом парке' },
+    { need: 5,  icon: 'castle', title: 'Постройка «Дино Парк»', text: 'Открывается в игре без ожидания и затрат' },
+    { need: 10, icon: 'ticket', title: 'Золотой билет', text: 'Толпа гостей в вашем игровом парке' },
   ];
 
   // ---------- Хранилище ----------
@@ -83,7 +85,7 @@
   let query = '';
   const chips = document.getElementById('chips');
   chips.innerHTML = [`<button class="chip on" data-cat="">Все</button>`]
-    .concat(Object.entries(CATS).map(([id, c]) => `<button class="chip" data-cat="${id}">${c.icon} ${c.label}</button>`))
+    .concat(Object.entries(CATS).map(([id, c]) => `<button class="chip" data-cat="${id}">${I.svg(c.icon)} ${c.label}</button>`))
     .join('');
   chips.addEventListener('click', (e) => {
     const b = e.target.closest('.chip');
@@ -182,14 +184,14 @@
       <div class="sheet-in">
         <h2>${iconFor(it)} ${esc(it.name)}</h2>
         <div class="tags">${it.cats.map((c) => `<span class="tag">${CATS[c].label}</span>`).join('')}</div>
-        ${it.note ? `<p class="note">📍 ${esc(it.note)}</p>` : ''}
-        ${canStamp(it) ? `<div class="hint">🎟️ Отметьтесь здесь в «Сказочном паспорте» и получите бонус в онлайн-игре «Парк Сказка».</div>` : ''}
+        ${it.note ? `<p class="note">${I.svg('map-pin')} ${esc(it.note)}</p>` : ''}
+        ${canStamp(it) ? `<div class="hint">${I.svg('ticket')} Отметьтесь здесь в «Сказочном паспорте» и получите бонус в онлайн-игре «Парк Сказка».</div>` : ''}
         <div class="actions">
           ${canStamp(it)
-            ? `<button class="btn ${done ? 'ok' : 'primary'} wide" data-act="stamp">${done ? '✓ Вы здесь уже были' : '📍 Я здесь — отметиться'}</button>`
+            ? `<button class="btn ${done ? 'ok' : 'primary'} wide" data-act="stamp">${done ? `${I.svg('check')} Вы здесь уже были` : `${I.svg('map-pin')} Я здесь — отметиться`}</button>`
             : ''}
-          <button class="btn" data-act="plan">${inPlan ? '★ В плане' : '☆ В план дня'}</button>
-          <button class="btn" data-act="share">↗ Поделиться</button>
+          <button class="btn" data-act="plan">${I.svg('star', inPlan ? 'on' : '')} ${inPlan ? 'В плане' : 'В план дня'}</button>
+          <button class="btn" data-act="share">${I.svg('arrow-right')} Поделиться</button>
         </div>
         <div class="near">
           <h4>Рядом</h4>
@@ -221,7 +223,7 @@
     save();
     markers.get(it.id).getElement()?.classList.add('done');
     const reward = REWARDS.find((r) => r.need > before && r.need <= visited.size);
-    toast(reward ? `🎉 Новая награда: ${reward.title}!` : `Отметка получена: ${it.name}`);
+    toast(reward ? `Новая награда: ${reward.title}!` : `Отметка получена: ${it.name}`);
   }
 
   async function share(it) {
@@ -247,7 +249,7 @@
   // ---------- Список ----------
   const listEl = document.getElementById('list');
   function rowHTML(it) {
-    const st = visited.has(it.id) ? '✅' : planned.has(it.id) ? '★' : '';
+    const st = visited.has(it.id) ? I.svg('check', 'ok') : planned.has(it.id) ? I.svg('star', 'on') : '';
     return `<button class="row" data-id="${it.id}">
       ${it.photo ? `<img src="${it.photo}" alt="" loading="lazy">` : `<span class="ph">${iconFor(it)}</span>`}
       <span class="t"><b>${esc(it.name)}</b><small>${catOf(it).label}${it.note ? ' · ' + esc(it.note) : ''}</small></span>
@@ -258,7 +260,7 @@
     listEl.innerHTML = Object.entries(CATS)
       .map(([id, c]) => {
         const g = vis.filter((i) => i.cats[0] === id);
-        return g.length ? `<div class="group-h">${c.icon} ${c.label} · ${g.length}</div>${g.map(rowHTML).join('')}` : '';
+        return g.length ? `<div class="group-h">${I.svg(c.icon)} ${c.label} · ${g.length}</div>${g.map(rowHTML).join('')}` : '';
       })
       .join('');
   }
@@ -278,9 +280,9 @@
     badge.textContent = n;
     document.getElementById('rewards').innerHTML = REWARDS.map((r) => {
       const got = n >= r.need;
-      return `<div class="reward ${got ? 'got' : ''}"><span class="ic">${got ? r.icon : '🔒'}</span>
+      return `<div class="reward ${got ? 'got' : ''}"><span class="ic">${I.svg(got ? r.icon : 'lock')}</span>
         <span class="t"><b>${r.title}</b><small>${r.text}</small>
-        ${got ? `<small>Код для игры: <span class="code">${promo(r)}</span> · <a href="../play.html">ввести в игре →</a></small>` : `<small>Нужно отметок: ${r.need}</small>`}</span></div>`;
+        ${got ? `<small>Код для игры: <span class="code">${promo(r)}</span> · <a href="../play.html">ввести в игре</a></small>` : `<small>Нужно отметок: ${r.need}</small>`}</span></div>`;
     }).join('');
     const stamps = [...visited].map(byId).filter(Boolean);
     document.getElementById('stamps').innerHTML = stamps.length
@@ -289,7 +291,7 @@
     const plan = [...planned].map(byId).filter(Boolean);
     document.getElementById('plan').innerHTML = plan.length
       ? plan.map(rowHTML).join('')
-      : `<div class="empty">Добавляйте аттракционы кнопкой «☆ В план дня».</div>`;
+      : `<div class="empty">Добавляйте аттракционы кнопкой «В план дня».</div>`;
   }
   document.getElementById('view-passport').addEventListener('click', (e) => {
     const row = e.target.closest('[data-id]');

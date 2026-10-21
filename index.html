@@ -3,19 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#e8461e">
-  <title>Парк Сказка — онлайн-стратегия</title>
-  <meta name="description" content="Онлайн-стратегия о настоящем парке развлечений «Сказка» в Крылатском: стройте аттракционы, ухаживайте за животными, привлекайте гостей вместе с ИИ-ведущей Феей Сказки.">
+  <meta name="theme-color" content="#0a0814">
+  <title>Парк Сказка</title>
+  <meta name="description" content="Тайкун о настоящем парке развлечений «Сказка» в Крылатском: ходите по своему парку, стройте аттракционы, кормите альпак и енотов, принимайте гостей.">
   <link rel="icon" href="map/assets/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="site.css">
 </head>
 <body>
+  <!-- фильтр искажения для «жидкого стекла» -->
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="liquid" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="7" result="noise"/>
+      <feGaussianBlur in="noise" stdDeviation="2" result="soft"/>
+      <feDisplacementMap in="SourceGraphic" in2="soft" scale="60" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+  <div class="aurora"><i></i><i></i><i></i><i></i></div>
+  <div class="grain"></div>
+  <div class="cursor-glow"></div>
+
   <header class="nav">
-    <div class="wrap">
-      <a class="logo" href="#">🎡 Парк <b>Сказка</b></a>
+    <div class="glass"><div class="liquid"></div>
+      <a class="logo" href="#"><i data-icon="ferris-wheel"></i> Парк <b>Сказка</b></a>
       <nav>
-        <a href="#rules">Правила</a>
-        <a href="#heroes">Герои</a>
+        <a href="#about">Игра</a>
+        <a href="#heroes">Команда</a>
         <a href="#buildings">Постройки</a>
         <a href="#real">Настоящий парк</a>
       </nav>
@@ -26,79 +41,83 @@
   <section class="hero">
     <div class="wrap">
       <div>
-        <span class="kicker">Онлайн-стратегия · ИИ-ведущий</span>
-        <h1>Построй свою <span>Сказку</span></h1>
-        <p class="lead">Вы — директор настоящего парка развлечений в Крылатском. Стройте аттракционы, заботьтесь об альпаках и енотах, решайте, что делать, когда на парк обрушивается дождь или толпа школьников. Каждый день Фея Сказки рассказывает, что происходит, и предлагает варианты.</p>
-        <div class="cta">
-          <a class="btn primary" href="play.html">▶ Начать игру</a>
-          <a class="btn" href="map/">🗺️ Карта парка</a>
+        <span class="pill glass"><span class="dot"></span>Тайкун на настоящей карте парка</span>
+        <h1 class="split">Построй свою <span class="grad">Сказку</span></h1>
+        <p class="lead reveal" style="--d:.5s">Вы — директор «Сказки» в Крылатском. Ходите по настоящим аллеям парка, восстанавливайте аттракционы на их реальных местах, следите за животными, чистотой и бюджетом и принимайте решения по ситуациям, которые возникают каждый день.</p>
+        <div class="cta reveal" style="--d:.65s">
+          <a class="btn primary" href="play.html" data-magnet><i data-icon="play"></i> Начать игру</a>
+          <a class="btn glass" href="map/" data-magnet><i data-icon="map"></i> Карта парка</a>
         </div>
-        <div class="stats">
-          <div><b>5 дней</b>чтобы стать лучшим парком</div>
-          <div><b>14 построек</b>из настоящего парка</div>
-          <div><b>6 героев</b>которых можно встретить вживую</div>
+        <div class="stats reveal" style="--d:.8s">
+          <div class="stat glass"><b data-count="92">0</b><span>объекта для стройки</span></div>
+          <div class="stat glass"><b data-count="6">0</b><span>сотрудников</span></div>
+          <div class="stat glass"><b data-count="113">0</b><span>объектов на карте</span></div>
         </div>
       </div>
-      <div class="collage">
-        <img src="map/assets/photos/028.jpg" alt="Колесо обозрения">
-        <img src="map/assets/photos/049.jpg" alt="Альпака парк">
-        <img src="map/assets/photos/057.jpg" alt="Дино парк">
-        <div class="bubble">🧚 <b>Фея Сказки</b>«Еноты опять утащили ключи от кассы! Что будем делать?»</div>
+      <div class="scene reveal" style="--d:.3s" data-parallax>
+        <div class="card3d glass c1" data-depth="30"><img src="map/assets/photos/028.jpg" alt="Колесо обозрения"></div>
+        <div class="card3d glass c2" data-depth="55"><img src="map/assets/photos/049.jpg" alt="Альпака парк"></div>
+        <div class="card3d glass c3" data-depth="40"><img src="map/assets/photos/057.jpg" alt="Дино парк"></div>
+        <div class="bubble glass" data-depth="70"><b>Управляющая парком</b>«К входу подъехали школьные группы. Открываем дополнительную кассу?»</div>
+        <span class="floaty glass" style="left:-4%;top:58%;animation-delay:-1s" data-depth="90"><img src="assets/thumbs/053.jpg" alt=""></span>
+        <span class="floaty glass" style="right:4%;top:-2%;animation-delay:-2.5s" data-depth="80"><img src="assets/thumbs/015.jpg" alt=""></span>
+        <span class="floaty glass small" style="left:44%;top:40%;animation-delay:-4s" data-depth="100"><img src="assets/thumbs/050.jpg" alt=""></span>
       </div>
     </div>
   </section>
 
-  <section class="block alt" id="rules">
+  <section class="block" id="about">
     <div class="wrap">
-      <h2>Как играть</h2>
-      <p class="sub">Партия длится 5 игровых дней, один день — один ход. Сыграть можно за 5 минут.</p>
-      <div class="grid g3">
-        <div class="card"><div class="big">🪙</div><h3>Монеты</h3><p>На них строятся аттракционы и решаются проблемы. Каждый вечер парк получает выручку: чем больше гостей и лучше их настроение, тем она больше.</p></div>
-        <div class="card"><div class="big">👥</div><h3>Гости</h3><p>Сколько людей приходит в парк за день. Новые аттракционы и зоны с животными привлекают новых гостей.</p></div>
-        <div class="card"><div class="big">😊</div><h3>Настроение</h3><p>Шкала от 0 до 100. Очереди, дождь и голодные гости её снижают, а праздники, кафе и зелёные зоны поднимают.</p></div>
+      <div class="reveal"><span class="eyebrow">Как играть</span>
+        <h2>Ваш парк. Ваши правила.</h2>
+        <p class="sub">Настоящий тайкун прямо в браузере: на компьютере и на телефоне. Парк живёт, пока вы играете: гости приходят, катаются, платят и уходят довольными, если вы хорошо о них позаботились.</p>
       </div>
-      <h3 style="margin:36px 0 14px">Ход игры</h3>
-      <div class="grid g4 steps">
-        <div class="card"><h3>Событие</h3><p>Фея Сказки рассказывает, что случилось в парке сегодня.</p></div>
-        <div class="card"><h3>Выбор</h3><p>Вы выбираете одно из трёх решений: разобраться с событием или построить новую зону.</p></div>
-        <div class="card"><h3>Последствия</h3><p>Ресурсы меняются, а ведущая рассказывает, к чему привело ваше решение.</p></div>
-        <div class="card"><h3>Победа</h3><p>К концу 5-го дня наберите <b>300 гостей</b> и <b>настроение 70+</b>, и «Сказка» станет лучшим парком Москвы.</p></div>
+      <div class="grid bento">
+        <div class="glass span4 feat reveal"><i data-icon="footprints" class="ic"></i><h3>Настоящая карта «Сказки»</h3><p>Игра идёт прямо на официальной карте парка в Крылатском, 1 к 1. Директор ходит по реальным аллеям, а каждый аттракцион стоит на своём настоящем месте.</p></div>
+        <div class="glass span2 reveal" style="--d:.1s"><i data-icon="hammer" class="ic"></i><h3>Восстановите парк</h3><p>92 объекта из настоящей «Сказки» — от «Смерча» до Альпака парка.</p></div>
+        <div class="glass span2 reveal" style="--d:.1s"><i data-icon="paw-print" class="ic"></i><h3>Заботьтесь о животных</h3><p>Альпаки, еноты, хаски и птицы голодают, если про них забыть.</p></div>
+        <div class="glass span2 reveal" style="--d:.2s"><i data-icon="users" class="ic"></i><h3>Принимайте гостей</h3><p>Каждый гость выбирает аттракцион, платит за билет и радуется — или ворчит.</p></div>
+        <div class="glass span2 reveal" style="--d:.3s"><i data-icon="sparkles" class="ic"></i><h3>Утренние события</h3><p>Каждое утро — новая ситуация: погода, наплыв посетителей, проверки. Выберите решение.</p></div>
+        <div class="glass span3 reveal"><i data-icon="trophy" class="ic"></i><h3>Рейтинг и задания</h3><p>Выполняйте задания директора и поднимайте рейтинг парка до пяти звёзд.</p></div>
+        <div class="glass span3 reveal" style="--d:.1s"><i data-icon="ticket" class="ic"></i><h3>Бонусы за реальные визиты</h3><p>Отметки на настоящих аттракционах в карте дают коды на монеты, бонусы и постройки.</p></div>
       </div>
     </div>
   </section>
 
   <section class="block" id="heroes">
     <div class="wrap">
-      <h2>Герои</h2>
-      <p class="sub">Жители «Сказки» участвуют в событиях игры. Многих из них можно встретить в настоящем парке.</p>
-      <div class="grid g3" id="heroes-grid"></div>
+      <div class="reveal"><span class="eyebrow">Команда</span>
+        <h2>Сотрудники парка</h2>
+        <p class="sub">Сотрудники сообщают о ситуациях в парке и помогают принимать решения.</p>
+      </div>
+      <div class="grid heroes" id="heroes-grid"></div>
     </div>
   </section>
 
-  <section class="block alt" id="buildings">
-    <div class="wrap">
-      <h2>Постройки</h2>
-      <p class="sub">Все постройки в игре — настоящие аттракционы и зоны парка «Сказка». Каждую можно найти на карте и посетить.</p>
-      <div class="grid g4" id="buildings-grid"></div>
+  <section class="block" id="buildings">
+    <div class="wrap reveal"><span class="eyebrow">Постройки</span>
+      <h2>Всё как в настоящем парке</h2>
+      <p class="sub">Каждая постройка в игре — реальный аттракцион или зона «Сказки» на своём месте. Найдите её на карте и прокатитесь вживую.</p>
     </div>
+    <div class="marquee"><div class="track" id="track-1"></div></div>
+    <div class="marquee"><div class="track rev" id="track-2"></div></div>
   </section>
 
   <section class="block" id="real">
     <div class="wrap">
-      <h2>Игра ↔ настоящий парк</h2>
-      <p class="sub">Чем чаще вы бываете в настоящей «Сказке», тем сильнее ваш парк в игре.</p>
-      <div class="real">
-        <div class="card">
-          <div class="big">🎟️</div>
+      <div class="reveal"><span class="eyebrow">Игра и настоящий парк</span>
+        <h2>Приходите в парк — сильнее в игре</h2>
+      </div>
+      <div class="grid real">
+        <div class="glass reveal">
+          <i data-icon="ticket" class="ic"></i>
           <h3>Сказочный паспорт</h3>
           <p>Откройте карту парка на телефоне и отмечайтесь на аттракционах. За отметки вы получаете коды, которые вводятся в игре:</p>
           <div class="codes" id="codes"></div>
+          <p style="margin:22px 0 0"><a class="btn primary" href="map/" data-magnet>Открыть карту парка</a></p>
         </div>
-        <div class="card">
-          <div class="big">🗺️</div>
-          <h3>Карта парка</h3>
-          <p>Интерактивная карта всех 113 объектов «Сказки»: аттракционы, животные, кафе, туалеты, кассы. Есть поиск, фото, «что рядом» и план на день. Карту можно установить на телефон как приложение, она работает без интернета.</p>
-          <p style="margin-top:18px"><a class="btn primary" href="map/">Открыть карту</a></p>
+        <div class="phone reveal" style="--d:.15s">
+          <div class="frame glass"><img src="assets/map-screen.jpg" alt="Карта парка на телефоне"></div>
         </div>
       </div>
     </div>
@@ -106,34 +125,23 @@
 
   <section class="final">
     <div class="wrap">
-      <h2>Фея Сказки уже ждёт</h2>
-      <p>5 дней, 3 ресурса и целый парк в ваших руках.</p>
-      <a class="btn" href="play.html">▶ Начать игру</a>
+      <div class="glass reveal"><div class="liquid"></div>
+        <h2>Парк <span class="grad">ждёт директора</span></h2>
+        <p>Целый парк в ваших руках. Играйте на компьютере или телефоне.</p>
+        <a class="btn primary" href="play.html" data-magnet><i data-icon="play"></i> Начать игру</a>
+      </div>
     </div>
   </section>
 
   <footer>
     <div class="wrap">
       <span>Парк развлечений «Сказка» · Москва, ул. Крылатская, 18 · <a href="https://parkskazka.com">parkskazka.com</a></span>
-      <span>Проект Всероссийского ИИ-хакатона 2026</span>
+      <span>Всероссийский ИИ-хакатон 2026</span>
     </div>
   </footer>
 
-  <script>
-    const fx = (v, icon) => v ? `<span class="${v < 0 ? 'neg' : ''}">${v > 0 ? '+' : ''}${v} ${icon}</span>` : '';
-    // Картинку героя можно положить в assets/heroes/<id>.png — иначе показывается эмодзи
-    const avatar = (h) => `<div class="avatar"><img src="assets/heroes/${h.id}.png" alt="${h.name}" onerror="this.replaceWith(document.createTextNode('${h.icon}'))"></div>`;
-    fetch('catalog.json').then((r) => r.json()).then((c) => {
-      document.getElementById('heroes-grid').innerHTML = c.heroes.map((h) => `
-        <div class="card hero-card">${avatar(h)}<span class="role">${h.role}</span><h3>${h.name}</h3><p>${h.text}</p></div>`).join('');
-      document.getElementById('buildings-grid').innerHTML = c.buildings.map((b) => `
-        <div class="card bcard"><img src="${b.photo}" alt="${b.name}" loading="lazy">
-          <div class="in"><h3>${b.icon} ${b.name}</h3><p>${b.text}</p>
-            <div class="fx">${fx(-b.cost, '🪙')}${fx(b.guests, '👥')}${fx(b.mood, '😊')}</div>
-            <a class="find" href="map/?id=${b.mapId}">📍 Найти в парке →</a></div></div>`).join('');
-      document.getElementById('codes').innerHTML = c.promo.map((p) =>
-        `<div><b>${p.need} ${p.need === 1 ? 'отметка' : p.need < 5 ? 'отметки' : 'отметок'}</b><span>${p.title}</span></div>`).join('');
-    });
-  </script>
+  <script src="icons.js"></script>
+  <script src="map/data.js"></script>
+  <script src="site.js"></script>
 </body>
 </html>

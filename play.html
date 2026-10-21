@@ -2,58 +2,79 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#e8461e">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0814">
   <title>Играть — Парк Сказка</title>
   <link rel="icon" href="map/assets/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="site.css">
   <link rel="stylesheet" href="play.css">
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three/three.module.min.js", "three/addons/": "./vendor/three/addons/" } }
+  </script>
 </head>
-<body>
-  <header class="nav">
-    <div class="wrap">
-      <a class="logo" href="index.html">🎡 Парк <b>Сказка</b></a>
-      <nav>
-        <a href="index.html#rules">Правила</a>
-        <a href="map/">Карта парка</a>
-      </nav>
-      <button class="btn small" id="restart">↻ Заново</button>
-    </div>
-  </header>
-
-  <div class="hud">
-    <div class="wrap hud-in">
-      <div class="res"><span>📅</span><b id="day"></b><small>день</small></div>
-      <div class="res"><span>🪙</span><b id="coins"></b><small>монеты</small></div>
-      <div class="res"><span>👥</span><b id="guests"></b><small>гостей / цель 300</small></div>
-      <div class="res mood"><span>😊</span><b id="mood"></b><small>настроение / цель 70</small><i><em id="mood-bar"></em></i></div>
+<body class="game">
+  <div id="loading" class="loading">
+    <div class="glass load-card">
+      <b>Парк «Сказка»</b>
+      <span>Загружаем парк…</span>
+      <div class="load-track"><em id="load-bar"></em></div>
     </div>
   </div>
+  <canvas id="world"></canvas>
+  <div id="floats" class="floats"></div>
 
-  <main class="wrap game">
-    <section class="stage">
-      <div id="log" class="log"></div>
-      <div id="turn"></div>
-    </section>
+  <div class="hud top-left glass">
+    <a href="index.html" class="home" title="На сайт"><i data-icon="house"></i></a>
+    <div class="r" title="Монеты"><i data-icon="coins" class="c-gold"></i><b id="coins">0</b></div>
+    <div class="r" title="Гостей в парке"><i data-icon="users"></i><b id="guests">0</b></div>
+    <div class="r mood" title="Настроение гостей"><i data-icon="smile"></i><b id="mood">0</b><span class="bar"><em id="mood-bar"></em></span></div>
+    <div class="r" title="Рейтинг парка"><span id="stars" class="stars"></span></div>
+    <div class="r clock"><span id="sun"></span><b id="clock">День 1 · 09:00</b></div>
+  </div>
 
-    <aside class="side">
-      <div class="card">
-        <h3>Мой парк</h3>
-        <div id="park" class="park"></div>
-      </div>
-      <div class="card">
-        <h3>🎟️ Код из «Сказочного паспорта»</h3>
-        <p class="hint">Отмечайтесь на аттракционах в <a href="map/">карте парка</a> и вводите полученные коды здесь.</p>
-        <form id="promo" class="promo">
-          <input id="promo-in" placeholder="SKAZKA-…" autocomplete="off" autocapitalize="characters">
-          <button class="btn small primary">OK</button>
-        </form>
-        <div id="promo-msg" class="hint"></div>
-      </div>
-    </aside>
-  </main>
+  <div class="hud quest glass" id="quest"></div>
 
+  <nav class="dock glass">
+    <button data-open="build"><i data-icon="hammer"></i>Строить<kbd>B</kbd></button>
+    <button data-open="quests"><i data-icon="list-checks"></i>Задания</button>
+    <button data-open="promo"><i data-icon="ticket"></i>Код</button>
+    <button data-open="help"><i data-icon="circle-help"></i>Помощь</button>
+  </nav>
+
+  <button id="act" class="act glass" hidden></button>
+
+  <div id="stick" class="stick glass" aria-label="Джойстик"><i></i></div>
+
+  <div class="zoom glass">
+    <button id="zin" aria-label="Приблизить"><i data-icon="plus"></i></button>
+    <button id="zout" aria-label="Отдалить"><i data-icon="minus"></i></button>
+  </div>
+
+  <section id="panel-build" class="sheet glass" hidden>
+    <header>
+      <h3>Свободные участки</h3>
+      <div class="cats" id="cats"></div>
+      <button class="x" data-close aria-label="Закрыть"><i data-icon="x"></i></button>
+    </header>
+    <div class="shop" id="shop"></div>
+  </section>
+
+  <section id="info" class="info glass" hidden></section>
+
+  <div id="modal" class="modal" hidden>
+    <div class="modal-card glass" id="modal-card"></div>
+  </div>
+
+  <div id="toasts" class="toasts"></div>
+
+  <script src="icons.js"></script>
+  <script src="map/data.js"></script>
+  <script src="game-data.js"></script>
+  <script src="world-data.js"></script>
   <script src="host.js"></script>
-  <script src="play.js"></script>
+  <script type="module" src="game.js"></script>
 </body>
 </html>
