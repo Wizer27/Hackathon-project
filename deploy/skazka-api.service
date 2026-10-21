@@ -1,0 +1,15 @@
+# systemd-служба бэкенда: sudo cp deploy/skazka-api.service /etc/systemd/system/ && sudo systemctl enable --now skazka-api
+[Unit]
+Description=Park Skazka API (FastAPI)
+After=network-online.target
+
+[Service]
+# переменные окружения бэкенд читает сам из /srv/skazka/.env (python-dotenv)
+WorkingDirectory=/srv/skazka
+ExecStart=/srv/skazka/venv/bin/uvicorn api.main:app --host 127.0.0.1 --port 8080
+Restart=always
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

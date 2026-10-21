@@ -27,10 +27,31 @@
 - Иконки — [Lucide](https://lucide.dev) (ISC), в `icons.js`. Эмодзи не используются.
 
 ## Запуск
-Сайт статический, сервер не нужен:
+
+Локально:
 ```bash
 python3 -m http.server 8000      # http://localhost:8000
 ```
+
+### Деплой на сервер (Caddy)
+Сайт статический — его раздаёт Caddy; бэкенд (FastAPI) работает рядом и доступен как `/api/...`.
+```bash
+# на сервере
+sudo git clone https://github.com/Wizer27/Hackathon-project.git /srv/skazka
+cd /srv/skazka
+cp .env.example .env && nano .env                     # DATABASE_URL и ключи бэкенда
+python3 -m venv venv && venv/bin/pip install -r requirements.txt
+sudo chown -R www-data:www-data /srv/skazka
+
+sudo cp deploy/skazka-api.service /etc/systemd/system/
+sudo systemctl enable --now skazka-api                 # бэкенд на 127.0.0.1:8080
+
+sudo cp deploy/Caddyfile /etc/caddy/Caddyfile
+sudo nano /etc/caddy/Caddyfile                         # заменить skazka.example.com на свой домен
+sudo systemctl reload caddy                            # HTTPS-сертификат Caddy получит сам
+```
+Обновление: `cd /srv/skazka && sudo -u www-data git pull && sudo systemctl restart skazka-api`.
+Caddy не отдаёт наружу исходники бэкенда, `.env`, `tools/`, `.git`.
 
 ## Ведущий игры (утренние события)
 Сейчас события берутся из сценария в `host.js`. Чтобы подключить своего ИИ-ассистента, замените `SkazkaHost.nextTurn` — формат запроса и ответа описан в комментарии в начале файла. Эффекты из ответа игра ограничивает (`LIMITS` в `game.js`). В `state.buildings` приходят id объектов карты (`map/data.js`).

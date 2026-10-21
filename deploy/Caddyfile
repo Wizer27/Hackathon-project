@@ -1,0 +1,44 @@
+# Caddy для «Парк Сказка».
+# Сайт — статические файлы из /srv/skazka, бэкенд (FastAPI) — на 127.0.0.1:8080, доступен как /api/...
+# Замените skazka.example.com на свой домен (A-запись должна указывать на сервер). HTTPS Caddy настроит сам.
+skazka.example.com {
+	encode zstd gzip
+
+	# бэкенд: /api/auth/google → http://127.0.0.1:8080/auth/google
+	handle_path /api/* {
+		reverse_proxy 127.0.0.1:8080
+	}
+
+	handle {
+		root * /srv/skazka
+
+		# исходники бэкенда, окружение и служебные файлы не раздаём
+		@private {
+			path /api/* /database/* /tools/* /deploy/* /venv/* /.venv/* /.git/* /.env* /requirements.txt *.py *.md
+		}
+		respond @private 404
+
+		# тяжёлые ассеты (модели, текстуры, библиотеки) кешируются браузером
+		@static path /assets/* /vendor/* /map/assets/*
+		header @static Cache-Control "public, max-age=604800"
+		header /map/sw.js Cache-Control "no-cache"
+		# file_server ставит свой Content-Type — переопределяем после него (defer)
+		@manifest path *.webmanifest
+		header @manifest {
+			Content-Type "application/manifest+json"
+			defer
+		}
+		@glb path *.glb
+		header @glb {
+			Content-Type "model/gltf-binary"
+			defer
+		}
+		@gltf path *.gltf
+		header @gltf {
+			Content-Type "model/gltf+json"
+			defer
+		}
+
+		file_server
+	}
+}

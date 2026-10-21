@@ -12,7 +12,7 @@ from typing import List
 
 load_dotenv()
 
-database_url = "postgresql+asyncpg://postgres.regqtbofstblnnsovack:270710_030565@aws-1-eu-central-1.pooler.supabase.com:5432/postgres"
+database_url = os.environ["DATABASE_URL"]  # postgresql+asyncpg://... — задаётся в .env
 
 
 
