@@ -6,7 +6,7 @@ After=network-online.target
 [Service]
 # переменные окружения бэкенд читает сам из /srv/skazka/.env (python-dotenv)
 WorkingDirectory=/srv/skazka
-ExecStart=/srv/skazka/venv/bin/uvicorn api.main:app --host 127.0.0.1 --port 8080
+ExecStart=/srv/skazka/venv/bin/uvicorn api.main:app --host 127.0.0.1 --port 47813
 Restart=always
 User=www-data
 Group=www-data

@@ -1,4 +1,6 @@
-from fastapi import Request,FastAPI,HTTPException,status,Header
+from fastapi import Request,FastAPI,HTTPException,status,Header,Depends
+from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 import uvicorn
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
@@ -6,9 +8,11 @@ import aiohttp
 import os
 from dotenv import load_dotenv
 import uuid
-from typing  import Optional
+from typing  import Optional,Literal
+import json
 from pydantic import BaseModel,EmailStr
-from database.main_db.main_core import create_user,get_user_data_for_jwt
+from database.main_db.main_core import create_user,get_user_data_for_jwt,get_user_profile
+from database.game_db.game_core import save_game,load_game,create_table as create_game_table
 from database.jwt_db.jwt_core import create_refresh_token_db,delete_jwt_tokens,get_user_refresh_token
 from database.email_code_db.email_core import create_code,delete_line,check_code
 from api.auth import create_access_token,create_refresh_token
@@ -17,12 +21,26 @@ from jose.exceptions import ExpiredSignatureError, JWTError
 import secrets
 import logging 
 
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+
 GOOGLE_CLIENT_ID_SITE = os.getenv("GOOGLE_CLIENT_ID_SITE")
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app:FastAPI):
+    await create_game_table()  # таблица сохранений игры создаётся при старте, если её ещё нет
+    yield
+
+app = FastAPI(lifespan = lifespan)
+
+# Через Caddy сайт и API на одном домене (/api/...), CORS нужен только для локальной разработки
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = [o for o in os.getenv("ALLOWED_ORIGINS","").split(",") if o],
+    allow_origin_regex = r"http://(localhost|127\.0\.0\.1)(:\d+)?",  # локальная разработка с любого порта
+    allow_methods = ["*"],
+    allow_headers = ["*"],
+)
 
 
 @app.get("/")
@@ -32,14 +50,21 @@ async def main(request:Request):
     }
 
 
+@app.get("/config")
+async def public_config():
+    """Публичные настройки для сайта: client_id для кнопки «Войти через Google»."""
+    return {"google_client_id":GOOGLE_CLIENT_ID_SITE}
+
+
 class AuthGoogle(BaseModel):
     id_token:str
+    method:Literal["site","app"] = "site"
 
 @app.post("/auth/google")
 async def auth_google_handler(request:Request,req:AuthGoogle):
 
     try:
-        main_google_client_id = GOOGLE_CLIENT_ID if  req.method == "app" else GOOGLE_CLIENT_ID_SITE
+        main_google_client_id =  GOOGLE_CLIENT_ID_SITE
         idinfo = id_token.verify_oauth2_token(
             req.id_token,
             google_requests.Request(),
@@ -113,18 +138,17 @@ async def send_email_code(email: str, code: str):
     payload = {
     "from": os.getenv("EMAIL_FROM"),
     "to": [email],
-    "subject": "VEORA Login Verification",
+    "subject": "Парк «Сказка»: код для входа",
     "html": f"""
     <div style="font-family: Arial, sans-serif; background-color:#f5f5f5; padding:40px; color:#111111;">
         <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:12px; padding:30px; text-align:center; border:1px solid #e5e7eb;">
 
-            <h1 style="color:#111111; letter-spacing:2px;">VEORA</h1>
+            <h1 style="color:#111111; letter-spacing:1px;">Парк «Сказка»</h1>
 
-            <h2 style="margin-top:20px; color:#1f2937;">Login Verification</h2>
+            <h2 style="margin-top:20px; color:#1f2937;">Код для входа в игру</h2>
 
             <p style="color:#4b5563; font-size:16px;">
-                We received a request to log in to your account.
-                Please use the verification code below to proceed.
+                Введите этот код на сайте, чтобы войти в аккаунт.
             </p>
 
             <div style="margin:30px 0;">
@@ -143,11 +167,11 @@ async def send_email_code(email: str, code: str):
             </div>
 
             <p style="color:#6b7280;">
-                This code is valid for <b>2 minutes</b>.
+                Код действует <b>2 минуты</b>.
             </p>
 
             <p style="margin-top:20px; color:#9ca3af; font-size:14px;">
-                If you didn’t request this, you can safely ignore this email.
+                Если вы не запрашивали код, просто проигнорируйте это письмо.
             </p>
 
         </div>
@@ -181,6 +205,7 @@ async def send_code(request:Request,req:AuthWithEmail):
 
 
         await send_email_code(req.email,code)
+        return {"status":"sent"}
 
     except HTTPException:
         raise
@@ -200,6 +225,8 @@ async def check_code_router(request:Request,req:Verify_Code):
         email_parts = req.email.split("@")
 
         check_result = await check_code(req.email,req.code)
+        if not check_result:
+            raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST,detail = "Invalid or expired code")
 
 
         # default sql data
@@ -224,7 +251,6 @@ async def check_code_router(request:Request,req:Verify_Code):
         user_data = {
             "user_id":user_id_main,
             "name":email_parts[0],
-            "device_id":req.device_id,
             "provider":"email"
         }
 
@@ -264,10 +290,8 @@ async def refresh_token_api(request:Request,req:RefreshToken):
     try:
         payload = jwt.decode(req.refresh_token, os.getenv("REFRESH_SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")])
         user_id: str = payload.get("user_id")
-        device_id:str = payload.get("device_id")
 
-
-        if user_id is None or device_id is None:
+        if user_id is None or payload.get("type") != "refresh":
             raise credentials_exception
 
         stored_token = await get_user_refresh_token(user_id)
@@ -278,8 +302,6 @@ async def refresh_token_api(request:Request,req:RefreshToken):
 
         if user_data == {} or not user_data.get("provider"):
             raise credentials_exception
-
-        user_data["device_id"] = device_id
 
     except JWTError:
         raise credentials_exception
@@ -326,13 +348,11 @@ async def get_current_user(token: str = Header(..., alias="Authorization")) -> d
         )
 
         user_id: str = payload.get("user_id")
-        device_id: str = payload.get("device_id")
-        if user_id is None or device_id is None:
+        if user_id is None or payload.get("type") != "access":
             raise credentials_exception
 
         return {
-            "user_id":user_id,
-            "device_id":device_id
+            "user_id":user_id
         }
 
 
@@ -350,5 +370,35 @@ async def get_current_user(token: str = Header(..., alias="Authorization")) -> d
 
 
 
+# ---- Игра ----
+
+@app.get("/me")
+async def me(user:dict = Depends(get_current_user)):
+    profile = await get_user_profile(user["user_id"])
+    if not profile:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND,detail = "User not found")
+    return profile
+
+
+MAX_SAVE_BYTES = 200_000
+
+class GameSave(BaseModel):
+    state:dict
+
+@app.get("/game/load")
+async def game_load(user:dict = Depends(get_current_user)):
+    data = await load_game(user["user_id"])
+    return data or {"state":None,"updated_at":None}
+
+@app.post("/game/save")
+async def game_save(req:GameSave,user:dict = Depends(get_current_user)):
+    if len(json.dumps(req.state)) > MAX_SAVE_BYTES:
+        raise HTTPException(status_code = status.HTTP_413_CONTENT_TOO_LARGE,detail = "Save is too large")
+    updated_at = await save_game(user["user_id"],req.state)
+    if updated_at is None:
+        raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,detail = "Server error")
+    return {"updated_at":updated_at}
+
+
 if __name__ == "__main__":
-    uvicorn.run(app,host = "127.0.0.1",port = 8080) # run
+    uvicorn.run(app,host = "127.0.0.1",port = 47813) # run

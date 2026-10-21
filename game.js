@@ -115,7 +115,16 @@ import { createWorld, loadAssets } from './world3d.js';
     get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
   };
-  let S = store.get(KEY) || newState();
+  // Вход: аккаунт (прогресс на сервере) или гость (прогресс в браузере)
+  const account = await window.SkazkaAuth.start();
+  const localKey = account.user ? `${KEY}:${account.user.user_id}` : KEY;
+  let S = null;
+  if (account.user) {
+    try { S = await account.load(); } catch { /* сервер недоступен — берём локальную копию */ }
+    // первый вход: гостевой прогресс переезжает в аккаунт
+    S ??= store.get(localKey) || store.get(KEY);
+  }
+  S ??= store.get(localKey) || newState();
   function newState() {
     // директор начинает у Колеса обозрения
     const c = nearestWalk(RIDE[28]?.x ?? 1900, (RIDE[28]?.y ?? 900) + 60);
@@ -129,7 +138,17 @@ import { createWorld, loadAssets } from './world3d.js';
       promos: [], heroes: [], free: [], history: [], lastChoice: null, eventPending: false, introSeen: false,
     };
   }
-  const save = () => { S.player = { x: player.x, y: player.y }; store.set(KEY, S); };
+  // Локально — при каждом сохранении, на сервер — не чаще раза в 15 секунд (или сразу, если force)
+  let cloudAt = 0, cloudTimer = null;
+  const save = (force = false) => {
+    S.player = { x: player.x, y: player.y };
+    store.set(localKey, S);
+    if (!account.user) return;
+    clearTimeout(cloudTimer);
+    const wait = force ? 0 : Math.max(0, 15000 - (Date.now() - cloudAt));
+    cloudTimer = setTimeout(() => { cloudAt = Date.now(); account.save(S).catch(() => {}); }, wait);
+  };
+  addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') save(true); });
   const builtRides = () => RIDES.filter((r) => S.built[r.id]);
 
   // ---------- Сущности ----------
@@ -479,7 +498,7 @@ import { createWorld, loadAssets } from './world3d.js';
       S.stats.servedToday = 0; S.stats.incomeToday = 0;
       litter = litter.slice(0, 10);
       for (let i = 0; i < 20; i++) spawnGuest(true);
-      save();
+      save(true);
       morningEvent();
     };
   }
@@ -492,7 +511,7 @@ import { createWorld, loadAssets } from './world3d.js';
     S.over = true;
     paused = true;
     guests = [];
-    save();
+    save(true);
     showModal(`
       <div class="host-row"><div class="av over">${I.svg('frown')}</div><div><h2>Банкротство</h2><small>В кассе не осталось денег — «Сказка» закрывается</small></div></div>
       <p>${lastCost ? `Вечером нужно было заплатить персоналу и за обслуживание аттракционов ${lastCost} монет, а денег не хватило.` : 'Расходы оказались больше, чем было денег в кассе.'} Следите за балансом: каждая постройка стоит всё дороже и требует денег на содержание каждый день.</p>
@@ -503,7 +522,11 @@ import { createWorld, loadAssets } from './world3d.js';
         <div><b>${S.stats.earned}</b><span>монет заработано</span></div>
       </div>
       <div class="cta"><button class="btn primary" id="restart">${I.svg('play')} Начать заново</button></div>`);
-    $('restart').onclick = () => { store.set(KEY, null); location.reload(); };
+    $('restart').onclick = async () => {
+      store.set(localKey, null);
+      if (account.user) await account.save({}).catch(() => {});
+      location.reload();
+    };
   }
 
   async function morningEvent() {
@@ -889,6 +912,23 @@ import { createWorld, loadAssets } from './world3d.js';
     if (!reachable(f, player.x, player.y)) return;
     player.field = f; player.wp = null; player.goal = null; focus = null;
     floats.push({ x: cx(c), y: cy(c), h: 0.5, text: '', icon: 'map-pin', tone: 'gold', t: 0 });
+  }
+
+  // ---------- Аккаунт ----------
+  {
+    const btn = $('account');
+    const u = account.user;
+    btn.innerHTML = u
+      ? `${u.picture ? `<img src="${esc(u.picture)}" alt="" referrerpolicy="no-referrer">` : `<span class="ava">${esc((u.name || '?')[0])}</span>`}<b>${esc(u.name || u.email || 'Игрок')}</b>`
+      : `${I.svg('users')}<b>Гость · Войти</b>`;
+    btn.onclick = () => {
+      if (!u) { account.logout(); location.reload(); return; } // сбросить гостевой режим → экран входа
+      paused = true;
+      showModal(`<div class="host-row"><div class="av">${u.picture ? `<img src="${esc(u.picture)}" alt="" referrerpolicy="no-referrer">` : I.svg('users')}</div><div><small>Аккаунт</small><h2>${esc(u.name || 'Игрок')}</h2></div></div>
+        <p>${esc(u.email || '')}</p><p>Прогресс сохраняется на сервере и доступен на любом устройстве.</p>
+        <div class="cta"><button class="btn glass" data-close>Закрыть</button><button class="btn primary" id="logout">Выйти</button></div>`);
+      $('logout').onclick = () => { save(true); account.logout(); setTimeout(() => location.reload(), 300); };
+    };
   }
 
   // ---------- Старт ----------

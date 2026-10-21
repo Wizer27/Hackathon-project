@@ -1,12 +1,15 @@
 # Caddy для «Парк Сказка».
-# Сайт — статические файлы из /srv/skazka, бэкенд (FastAPI) — на 127.0.0.1:8080, доступен как /api/...
+# Сайт — статические файлы из /srv/skazka, бэкенд (FastAPI) — на 127.0.0.1:47813, доступен как /api/...
 # Замените skazka.example.com на свой домен (A-запись должна указывать на сервер). HTTPS Caddy настроит сам.
-skazka.example.com {
+# Сайт слушает нестандартный порт 48443, чтобы не занимать 443: адрес — https://skazka.example.com:48443
+# (его же добавить в Google Cloud Console → Authorized JavaScript origins). Порт 48443 открыть в файрволе.
+# Сертификат Let's Encrypt Caddy получает через порт 80 или 443 — хотя бы один из них должен вести на этот Caddy.
+skazka.example.com:48443 {
 	encode zstd gzip
 
-	# бэкенд: /api/auth/google → http://127.0.0.1:8080/auth/google
+	# бэкенд: /api/auth/google → http://127.0.0.1:47813/auth/google
 	handle_path /api/* {
-		reverse_proxy 127.0.0.1:8080
+		reverse_proxy 127.0.0.1:47813
 	}
 
 	handle {

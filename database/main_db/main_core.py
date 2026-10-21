@@ -118,3 +118,25 @@ async def get_user_data_for_jwt(user_id:str) -> dict:
         except Exception:
             logger.exception("MAIN SQL ERROR")
             return {}
+
+
+async def get_user_profile(user_id:str) -> dict:
+    """Публичные данные игрока для сайта: имя, почта, аватар, способ входа."""
+    async with AsyncSession(async_engine) as conn:
+        try:
+            stmt = select(main_table.c.name,main_table.c.email,main_table.c.profile_pict,main_table.c.provider).where(main_table.c.user_id == user_id)
+            res = await conn.execute(stmt)
+            data = res.fetchone()
+            if not data:
+                return {}
+            name,email,picture,provider = data
+            return {
+                "user_id":user_id,
+                "name":name,
+                "email":email,
+                "picture":picture,
+                "provider":provider
+            }
+        except Exception:
+            logger.exception("MAIN SQL ERROR")
+            return {}

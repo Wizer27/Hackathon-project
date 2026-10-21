@@ -4,14 +4,14 @@ from api.config import async_engine
 from database.main_db.main_models import metadata_obj as m1
 from database.email_code_db.email_models import metadata_obj as m2
 from database.jwt_db.jwt_models import metadata_obj as m3
-
+from database.game_db.game_core import metadata_obj as m4 
 
 import subprocess
 import asyncio
 import os
 
 
-all_metadata = [m1, m2, m3]
+all_metadata = [m1, m2, m3, m4]
 
 async def create_all():
     async with async_engine.begin() as conn:

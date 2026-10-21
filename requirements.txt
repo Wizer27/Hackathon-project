@@ -8,4 +8,5 @@ google-auth==2.50.0
 requests
 aiohttp==3.13.5
 python-dotenv==1.2.1
-pydantic==2.13.5
+pydantic[email]==2.13.5
+greenlet

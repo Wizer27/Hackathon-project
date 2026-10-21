@@ -33,6 +33,13 @@
 python3 -m http.server 8000      # http://localhost:8000
 ```
 
+### Вход и сохранения
+Кнопка «Играть» открывает экран входа (`auth.js`): **Google**, **код на почту** или **гостевой режим**.
+- Вошедший игрок хранит прогресс на сервере (`/game/load`, `/game/save`, таблица `game_saves_table` создаётся сама при старте API), прогресс доступен на любом устройстве. Гость — в браузере; при первом входе гостевой прогресс переносится в аккаунт.
+- Эндпоинты API: `/config` (client_id Google), `/auth/google`, `/send/code`, `/check/code`, `/refresh`, `/me`, `/game/load`, `/game/save`.
+- Google: в Google Cloud Console у клиента `GOOGLE_CLIENT_ID_SITE` добавьте сайт (`https://ваш-домен:48443`) в Authorized JavaScript origins. Почта: нужны `EMAIL_API_KEY` и `EMAIL_FROM` (Resend).
+- Локально: `python3 -m http.server 8000` + API на `127.0.0.1:47813` (`venv/bin/uvicorn api.main:app --port 47813`); фронт сам ходит на `:47813`, CORS разрешён для `ALLOWED_ORIGINS`.
+
 ### Деплой на сервер (Caddy)
 Сайт статический — его раздаёт Caddy; бэкенд (FastAPI) работает рядом и доступен как `/api/...`.
 ```bash
@@ -44,10 +51,11 @@ python3 -m venv venv && venv/bin/pip install -r requirements.txt
 sudo chown -R www-data:www-data /srv/skazka
 
 sudo cp deploy/skazka-api.service /etc/systemd/system/
-sudo systemctl enable --now skazka-api                 # бэкенд на 127.0.0.1:8080
+sudo systemctl enable --now skazka-api                 # бэкенд на 127.0.0.1:47813
 
 sudo cp deploy/Caddyfile /etc/caddy/Caddyfile
 sudo nano /etc/caddy/Caddyfile                         # заменить skazka.example.com на свой домен
+sudo ufw allow 48443/tcp                               # сайт — https://ваш-домен:48443
 sudo systemctl reload caddy                            # HTTPS-сертификат Caddy получит сам
 ```
 Обновление: `cd /srv/skazka && sudo -u www-data git pull && sudo systemctl restart skazka-api`.
