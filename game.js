@@ -319,9 +319,11 @@ import { createWorld, loadAssets } from './world3d.js';
   }
 
   // ---------- Стройка и уход ----------
-  // Каждая следующая постройка дороже на INFLATION: материалы и подрядчики дорожают вместе с парком
+  // Каждая следующая постройка дороже на INFLATION: материалы и подрядчики дорожают вместе с парком.
+  // Кроме того, цены растут каждый день на DAY_INFLATION
   const INFLATION = 1.15;
-  const priceOf = (o) => (S.free.includes(o.id) ? 0 : Math.round((o.cost * INFLATION ** S.stats.built) / 10) * 10);
+  const DAY_INFLATION = 1.05;
+  const priceOf = (o) => (S.free.includes(o.id) ? 0 : Math.round((o.cost * INFLATION ** S.stats.built * DAY_INFLATION ** (S.day - 1)) / 10) * 10);
   // Содержание в день: зарплаты персонала + обслуживание каждой постройки
   const STAFF = 150;
   const upkeepOf = (o) => Math.round(o.cost * 0.05);
@@ -641,6 +643,9 @@ import { createWorld, loadAssets } from './world3d.js';
     set('guests', String(guests.length));
     set('mood', String(Math.round(moodShown)));
     $('mood-bar').style.width = `${moodShown}%`;
+    const m = Math.round(moneyMult() * 10) / 10;
+    set('mult', `×${m}`);
+    $('mult').dataset.tier = m >= 3 ? '3' : m >= 2 ? '2' : '1';
     set('stars', starsHTML(stars()), true);
     const h = hour(), hh = Math.min(21, Math.floor(h)), mm = Math.floor((h - Math.floor(h)) * 6) * 10;
     set('clock', `День ${S.day} · ${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`);
@@ -818,7 +823,8 @@ import { createWorld, loadAssets } from './world3d.js';
     paused = true;
     showModal(`<div class="host-row"><div class="av"><img src="${HERO.feya.photo}" alt=""></div><div><small>Управляющая парком</small><h2>${first ? 'Добро пожаловать' : 'Как играть'}</h2></div></div>
       <p>Вы стоите в настоящем парке «Сказка» в Крылатском — карта 1 к 1. Пока работают только колесо обозрения, карусель «Вальс» и блинная. Остальные ${RIDES.length - C.start.built.length} объектов — свободные участки на своих реальных местах. Восстановите парк целиком!</p>
-      <p><b>Деньги.</b> Каждый вечер платите зарплату персоналу и за обслуживание всех построек. Каждая новая постройка дороже предыдущей на 15%. Если деньги кончатся — банкротство, игра окончена.</p>
+      <p><b>Деньги.</b> Каждый вечер платите зарплату персоналу и за обслуживание всех построек. Цены на постройки растут каждый день на 5%, а каждая новая постройка ещё и дороже предыдущей на 15% — стройте, пока дёшево. Если деньги кончатся — банкротство, игра окончена.</p>
+      <p><b>Настроение — это выручка.</b> Чем довольнее гости, тем больше они платят за билеты: при настроении 0 — ×1, при 50 — ×2, при 100 — ×4. Текущий множитель горит рядом с настроением.</p>
       <div class="keys">
         <kbd>WASD</kbd><span>ходить (Shift — бегом). На телефоне — джойстик слева</span>
         <kbd>Мышь / палец</kbd><span>перетаскивайте, чтобы повернуть камеру; клик по дорожке — идти туда</span>
