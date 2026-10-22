@@ -10,7 +10,6 @@ import { createWorld, loadAssets } from './world3d.js';
   // ---------- Константы ----------
   const DAY = C.dayLength;
   const OPEN = 9, CLOSE = 21;
-  const MAX_GUESTS = 90;
   const FEED_COST = 15;
   const BUILD_TIME = 4;
   const REACH = 55; // на каком расстоянии (в пикселях карты) директор может что-то сделать
@@ -188,7 +187,7 @@ import { createWorld, loadAssets } from './world3d.js';
 
   // гость входит через кассу; inside — сразу оказаться на аллее рядом с работающим аттракционом (утро, старт)
   function spawnGuest(inside = false) {
-    if (guests.length >= MAX_GUESTS || !ENTRANCES.length) return;
+    if (!ENTRANCES.length) return;
     let c = pick(ENTRANCES);
     if (inside && builtRides().length) {
       const o = pick(builtRides());
@@ -267,6 +266,12 @@ import { createWorld, loadAssets } from './world3d.js';
   }
   const hour = () => OPEN + (CLOSE - OPEN) * (S.time / DAY);
   const appealSum = () => builtRides().reduce((s, r) => s + (S.built[r.id].broken ? 0 : r.appeal), 0);
+  // Каждый работающий аттракцион привлекает гостей: чем дороже, тем больше (гостей в секунду на монету цены)
+  const GUESTS_PER_COST = 1 / 5000;
+  const costSum = () => builtRides().reduce((s, r) => s + (S.built[r.id].broken ? 0 : r.cost), 0);
+  // 6-й и 7-й день каждой недели — выходные: гостей вдвое больше
+  const weekend = () => (S.day - 1) % 7 >= 5;
+  const guestMult = () => (weekend() ? 2 : 1);
   let moodShown = C.start.mood;
   // Множитель выручки от настроения: 0–50% — от ×1 до ×2, 50–100% — от ×2 до ×4
   const moneyMult = () => (moodShown <= 50 ? 1 + moodShown / 50 : 2 + (moodShown - 50) / 25);
@@ -452,7 +457,7 @@ import { createWorld, loadAssets } from './world3d.js';
     S.time += dt;
 
     if (hour() < CLOSE - 1.2) {
-      const rate = (0.3 + appealSum() * 0.06) * (0.4 + moodShown / 100) * Math.max(0.2, 1 + S.dayGuests / 40);
+      const rate = (0.3 + appealSum() * 0.06 + costSum() * GUESTS_PER_COST) * (0.4 + moodShown / 100) * Math.max(0.2, 1 + S.dayGuests / 40) * guestMult();
       spawnAcc += rate * dt;
       if (S.extraGuests > 0 && Math.random() < dt * 0.6) { S.extraGuests--; spawnAcc++; }
       while (spawnAcc >= 1) { spawnAcc--; spawnGuest(); }
@@ -648,7 +653,8 @@ import { createWorld, loadAssets } from './world3d.js';
     $('mult').dataset.tier = m >= 3 ? '3' : m >= 2 ? '2' : '1';
     set('stars', starsHTML(stars()), true);
     const h = hour(), hh = Math.min(21, Math.floor(h)), mm = Math.floor((h - Math.floor(h)) * 6) * 10;
-    set('clock', `День ${S.day} · ${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`);
+    set('clock', `День ${S.day}${weekend() ? ' · выходной' : ''} · ${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`);
+    $('guest-mult').hidden = !weekend();
     set('sun', I.svg(h >= 18 ? 'moon' : h >= 16 ? 'sunset' : 'sun'), true);
     renderQuest();
     const task = nearbyTask();
@@ -824,6 +830,7 @@ import { createWorld, loadAssets } from './world3d.js';
     showModal(`<div class="host-row"><div class="av"><img src="${HERO.feya.photo}" alt=""></div><div><small>Управляющая парком</small><h2>${first ? 'Добро пожаловать' : 'Как играть'}</h2></div></div>
       <p>Вы стоите в настоящем парке «Сказка» в Крылатском — карта 1 к 1. Пока работают только колесо обозрения, карусель «Вальс» и блинная. Остальные ${RIDES.length - C.start.built.length} объектов — свободные участки на своих реальных местах. Восстановите парк целиком!</p>
       <p><b>Деньги.</b> Каждый вечер платите зарплату персоналу и за обслуживание всех построек. Цены на постройки растут каждый день на 5%, а каждая новая постройка ещё и дороже предыдущей на 15% — стройте, пока дёшево. Если деньги кончатся — банкротство, игра окончена.</p>
+      <p><b>Гости.</b> Каждый работающий аттракцион привлекает новых гостей — чем он дороже, тем больше. В выходные (6-й и 7-й день каждой недели) гостей вдвое больше.</p>
       <p><b>Настроение — это выручка.</b> Чем довольнее гости, тем больше они платят за билеты: при настроении 0 — ×1, при 50 — ×2, при 100 — ×4. Текущий множитель горит рядом с настроением.</p>
       <div class="keys">
         <kbd>WASD</kbd><span>ходить (Shift — бегом). На телефоне — джойстик слева</span>

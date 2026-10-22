@@ -1303,7 +1303,7 @@ export function createWorld({ canvas, rides, services, kassas, Icons, quality })
   }
 
   // --- люди: ближайшие к камере — реалистичные модели, дальние — простые фигуры ---
-  const crowd = new Crowd(scene, mobile ? 70 : 140);
+  const crowd = new Crowd(scene, mobile ? 100 : 300);
   const TOPS = ['#ffffff', '#c0392b', '#2e86de', '#e1b12c', '#44bd32', '#8c7ae6', '#e58e26', '#353b48', '#d35400', '#16a085'];
   const BOTTOMS = ['#ffffff', '#3d4a5c', '#5a4636', '#1e272e', '#8395a7', '#2d3436', '#c8b89a'];
   const HAIRS = ['#ffffff', '#5a3825', '#2b1d14', '#c9a06a', '#8a8a8a', '#7a3b1e'];
