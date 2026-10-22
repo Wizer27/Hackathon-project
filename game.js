@@ -225,7 +225,7 @@ import { createWorld, loadAssets } from './world3d.js';
       const o = RIDE[g.target], b = S.built[g.target];
       if (o && b) {
         b.rides++;
-        addCoins(o.income, o);
+        addCoins(ticketOf(o), o);
         g.happy = clamp(g.happy + o.joy * (o.animals ? 0.5 + b.food / 200 : 1), 0, 100);
         emote(g, 'heart', '#f06595');
       }
@@ -268,6 +268,9 @@ import { createWorld, loadAssets } from './world3d.js';
   const hour = () => OPEN + (CLOSE - OPEN) * (S.time / DAY);
   const appealSum = () => builtRides().reduce((s, r) => s + (S.built[r.id].broken ? 0 : r.appeal), 0);
   let moodShown = C.start.mood;
+  // Множитель выручки от настроения: 0–50% — от ×1 до ×2, 50–100% — от ×2 до ×4
+  const moneyMult = () => (moodShown <= 50 ? 1 + moodShown / 50 : 2 + (moodShown - 50) / 25);
+  const ticketOf = (o) => Math.round(o.income * moneyMult());
   function mood() {
     const inPark = guests.filter((g) => g.state !== 'leave');
     const base = inPark.length ? inPark.reduce((s, g) => s + g.happy, 0) / inPark.length : C.start.mood;
@@ -690,7 +693,7 @@ import { createWorld, loadAssets } from './world3d.js';
       <button class="item" data-id="${r.id}" ${canAfford(r) ? '' : 'disabled'}>
         <img src="${r.thumb || ''}" alt="" loading="lazy">
         <b>${esc(r.name)}</b>
-        <div class="meta"><span class="price">${S.free.includes(r.id) ? 'Бесплатно' : `${I.svg('coins')} ${priceOf(r)}`}</span><span>билет ${r.income}</span></div>
+        <div class="meta"><span class="price">${S.free.includes(r.id) ? 'Бесплатно' : `${I.svg('coins')} ${priceOf(r)}`}</span><span>билет ${ticketOf(r)}</span></div>
         <div class="meta"><span>содержание ${upkeepOf(r)}/день</span></div>
         <div class="meta"><span class="tag" style="background:${r.color}">${I.svg(r.icon)}${r.label}</span></div>
       </button>`).join('') : `<div class="empty-shop">Все участки этой категории уже застроены</div>`;
@@ -725,7 +728,7 @@ import { createWorld, loadAssets } from './world3d.js';
         <div class="stats">
           <div>Цена: <b class="cost">${S.free.includes(o.id) ? 'бесплатно' : priceOf(o)}</b></div>
           <div>Содержание: <b>${upkeepOf(o)}/день</b></div>
-          <div>Билет: <b>${o.income}</b></div>
+          <div>Билет: <b>${ticketOf(o)}</b> <small>×${moneyMult().toFixed(1)}</small></div>
           <div>Радость: <b>+${o.joy}</b></div>
           <div>Интерес: <b>${o.appeal}</b></div>
         </div>
@@ -736,7 +739,7 @@ import { createWorld, loadAssets } from './world3d.js';
       else if (o.animals) action = `<button class="btn primary" data-a="do">${I.svg('carrot')} ${close ? `Покормить · ${FEED_COST}` : 'Подойти покормить'}</button>`;
       body = `
         <div class="stats">
-          <div>Билет: <b>${o.income}</b></div>
+          <div>Билет: <b>${ticketOf(o)}</b> <small>×${moneyMult().toFixed(1)}</small></div>
           <div>Катаний: <b>${b.rides}</b></div>
           <div>Радость: <b>+${o.joy}</b></div>
           <div>${b.broken ? '<b style="color:#ff8787">Сломан</b>' : '<b style="color:#8ce99a">Работает</b>'}</div>

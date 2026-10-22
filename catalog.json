@@ -14,7 +14,7 @@
       "label": "Экстрим",
       "icon": "zap",
       "color": "#f03e3e",
-      "cost": 1750,
+      "cost": 1220,
       "income": 19,
       "appeal": 5,
       "joy": 14,
@@ -24,7 +24,7 @@
       "label": "Семейные",
       "icon": "ferris-wheel",
       "color": "#f59f00",
-      "cost": 1000,
+      "cost": 700,
       "income": 11,
       "appeal": 3,
       "joy": 12,
@@ -34,7 +34,7 @@
       "label": "Детские",
       "icon": "baby",
       "color": "#e64980",
-      "cost": 600,
+      "cost": 420,
       "income": 6,
       "appeal": 2,
       "joy": 10
@@ -43,7 +43,7 @@
       "label": "Животные",
       "icon": "paw-print",
       "color": "#2f9e44",
-      "cost": 1500,
+      "cost": 1050,
       "income": 13,
       "appeal": 4,
       "joy": 18,
@@ -53,7 +53,7 @@
       "label": "Локации",
       "icon": "castle",
       "color": "#7048e8",
-      "cost": 1100,
+      "cost": 770,
       "income": 10,
       "appeal": 3,
       "joy": 14
@@ -62,7 +62,7 @@
       "label": "Площадки",
       "icon": "party-popper",
       "color": "#1c7ed6",
-      "cost": 900,
+      "cost": 630,
       "income": 5,
       "appeal": 2,
       "joy": 16
@@ -71,7 +71,7 @@
       "label": "Еда",
       "icon": "utensils",
       "color": "#e8590c",
-      "cost": 500,
+      "cost": 350,
       "income": 10,
       "appeal": 1,
       "joy": 16
@@ -80,7 +80,7 @@
       "label": "Сувениры",
       "icon": "shopping-bag",
       "color": "#ae3ec9",
-      "cost": 750,
+      "cost": 520,
       "income": 13,
       "appeal": 1,
       "joy": 8
@@ -89,7 +89,7 @@
       "label": "Аркады и тир",
       "icon": "gamepad-2",
       "color": "#c2255c",
-      "cost": 600,
+      "cost": 420,
       "income": 8,
       "appeal": 2,
       "joy": 10
@@ -98,7 +98,7 @@
       "label": "Фото и аквагрим",
       "icon": "camera",
       "color": "#0c8599",
-      "cost": 400,
+      "cost": 280,
       "income": 6,
       "appeal": 1,
       "joy": 8
@@ -106,31 +106,31 @@
   },
   "overrides": {
     "57": {
-      "cost": 2250,
+      "cost": 1580,
       "income": 19,
       "appeal": 7,
       "joy": 20
     },
     "15": {
-      "cost": 2000,
+      "cost": 1400,
       "income": 22,
       "appeal": 6,
       "joy": 16
     },
     "28": {
-      "cost": 1000,
+      "cost": 700,
       "income": 10,
       "appeal": 4,
       "joy": 12
     },
     "49": {
-      "cost": 1600,
+      "cost": 1120,
       "income": 14,
       "appeal": 5,
       "joy": 20
     },
     "62": {
-      "cost": 900,
+      "cost": 630,
       "income": 3,
       "appeal": 1,
       "joy": 22
